@@ -1,0 +1,57 @@
+/*** custom checkboxes ***/
+input[type='checkbox'] {
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    font-size:20px;
+    cursor:pointer;
+    margin-left: 0px;
+    color: inherit;
+}
+
+input[type='checkbox']::before {
+    content: "\f204";
+}
+
+input[type='checkbox']::after {
+    font-size: 15px;
+    margin-left: 5px;
+    font-weight: bold;
+    font-family: sans-serif;
+    content: "OFF";
+}
+
+input[type='checkbox']:checked::before {
+    content: "\f205";
+}
+
+input[type='checkbox']:checked::after {
+    font-size: 15px;
+    margin-left: 5px;
+    font-weight: bold;
+    font-family: sans-serif;
+    content: "ON";
+}
+
+.config-panel {
+    float:left; 
+    margin-left: 5% !important; 
+    text-align: left; 
+    width:90%;
+    margin-bottom: 10px;
+}
+
+.config-btn {
+    display:inline;
+    min-width:96px !important;
+    height:28px !important;
+}
+
+/* lrr.css override */
+.config-td {
+    max-width: 2000px !important;
+    width: 30vw;
+    vertical-align: middle;
+    text-align: left;
+    padding-bottom: 10px;
+}

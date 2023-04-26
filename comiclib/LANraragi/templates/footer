@@ -1,0 +1,9 @@
+<!-- LRR Standard Footer -->
+
+<p class="ip">
+    [% IF descstr %]
+    [% descstr %]
+    <br>
+    [% END %]
+    Powered by ComicLib.</a>
+</p>

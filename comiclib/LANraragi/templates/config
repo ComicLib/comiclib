@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<head>
+	<title>[% title %] - Settings</title>
+
+	<meta name="viewport" content="width=device-width" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<link type="image/png" rel="icon" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="/css/lrr.css?[% version%]" />
+	<link rel="stylesheet" type="text/css" href="/css/config.css" />
+
+	<link rel="stylesheet" type="text/css" href="/css/vendor/fontawesome-all.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/allcollapsible.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/ReactToastify.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/sweetalert2.min.css" />
+	[% csshead %]
+
+	<script src="/js/vendor/jquery.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/preact.umd.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/hooks.umd.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/compat.umd.js" type="text/JAVASCRIPT"></script>
+	<script>window.React = window.preactCompat; window.react = window.preactCompat;</script>
+	<script src="/js/vendor/clsx.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/react-toastify.umd.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/allcollapsible.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/sweetalert2.min.js" type="text/JAVASCRIPT"></script>
+
+	<script src="/js/common.js?[% version %]" type="text/JAVASCRIPT"></script>
+	<script src="/js/server.js?[% version %]" type="text/JAVASCRIPT"></script>
+	<script src="/js/config.js?[% version %]" type="text/JAVASCRIPT"></script>
+
+</head>
+
+<body>
+
+	<div class="ido">
+		<h2 class="ih" style="text-align:center">Admin Settings</h2>
+		<br>
+		<div class="left-column">
+
+			<img class="logo-container" src="./img/logo.png">
+			<br>
+			<h1 style="margin-bottom: 2px">LANraragi</h1>
+			Version [% version %], "[% vername %]"
+			<br>
+			<h2>Select a category to show the matching settings.</h2>
+			<br />
+			<input id='save' class='stdbtn' type='button' value='Save Settings' /><br />
+			<input id='plugin-config' class='stdbtn' type='button' value='Plugin Configuration' />
+			<input id='backup' class='stdbtn' type='button' value='Database Backup/Restore' />
+			<input id='return' class='stdbtn' type='button' value='Return to Library' />
+
+		</div>
+		<form class="right-column" name="editConfigForm" id="editConfigForm" enctype="multipart/form-data" method="post"
+			autocomplete="off">
+
+			<ul class="collapsible extensible with-right-caret">
+				<li class="option-flyout">
+					<div class="collapsible-title caret-right">
+						<i class="fa fa-cubes" aria-hidden="true"></i> Global Settings
+					</div>
+					<div class="collapsible-body">
+						<table style="margin:auto; font-size:9pt;">
+							<tbody>
+								[% INCLUDE templates_config/config_global %]
+							</tbody>
+						</table>
+					</div>
+				</li>
+				<li class="option-flyout">
+					<div class="collapsible-title caret-right">
+						<i class="fa fa-paint-brush" aria-hidden="true"></i> Theme
+					</div>
+					<div class="collapsible-body">
+						<table style="margin:auto; font-size:9pt;">
+							<tbody>
+								[% INCLUDE templates_config/config_theme %]
+							</tbody>
+						</table>
+					</div>
+				</li>
+				<li class="option-flyout">
+					<div class="collapsible-title caret-right">
+						<i class="fa fa-shield-alt" aria-hidden="true"></i> Security
+					</div>
+					<div class="collapsible-body">
+						<table style="margin:auto; font-size:9pt;">
+							<tbody>
+								[% INCLUDE templates_config/config_security %]
+							</tbody>
+						</table>
+					</div>
+				</li>
+				<li class="option-flyout">
+					<div class="collapsible-title caret-right">
+						<i class="fa fa-file-archive" aria-hidden="true"></i> Archive Files
+					</div>
+					<div class="collapsible-body">
+						<table style="margin:auto; font-size:9pt;">
+							<tbody>
+								[% INCLUDE templates_config/config_files %]
+							</tbody>
+						</table>
+					</div>
+				</li>
+				<li class="option-flyout">
+					<div class="collapsible-title caret-right">
+						<i class="fa fa-tags" aria-hidden="true"></i> Tags and Thumbnails
+					</div>
+					<div class="collapsible-body">
+						<table style="margin:auto; font-size:9pt;">
+							<tbody>
+								[% INCLUDE templates_config/config_tags %]
+							</tbody>
+						</table>
+					</div>
+				</li>
+				<li class="option-flyout">
+					<div class="collapsible-title caret-right">
+						<i class="fa fa-satellite" aria-hidden="true"></i> Background Workers
+					</div>
+					<div class="collapsible-body">
+						<table style="margin:auto; font-size:9pt;">
+							<tbody>
+								[% INCLUDE templates_config/config_shinobu %]
+							</tbody>
+						</table>
+					</div>
+				</li>
+			</ul>
+		</form>
+	</div>
+	[% INCLUDE footer %]
+	<a href="https://holopin.io/collect/clcv0owgf187308lgzgmbys80">🐫</a>
+</body>
+
+</html>

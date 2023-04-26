@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<head>
+	<title>[% title %]</title>
+
+	<meta name="viewport" content="width=device-width" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<link type="image/png" rel="icon" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="/css/lrr.css?[% version %]" />
+
+	<link rel="stylesheet" type="text/css" href="/css/vendor/fontawesome-all.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/jquery.contextMenu.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/awesomplete.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/tippy.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/allcollapsible.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/swiper-bundle.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/ReactToastify.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/vendor/sweetalert2.min.css" />
+	[% csshead %]
+
+	<script src="/js/vendor/jquery.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/jquery.dataTables.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/preact.umd.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/hooks.umd.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/compat.umd.js" type="text/JAVASCRIPT"></script>
+	<script>window.React = window.preactCompat; window.react = window.preactCompat;</script>
+	<script src="/js/vendor/clsx.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/react-toastify.umd.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/jquery.ui.position.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/jquery.contextMenu.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/awesomplete.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/popper.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/tippy-bundle.umd.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/marked.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/allcollapsible.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/swiper-bundle.min.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/vendor/sweetalert2.min.js" type="text/JAVASCRIPT"></script>
+
+	<script src="/js/index.js?[% version %]" type="text/JAVASCRIPT"></script>
+	<script src="/js/common.js?[% version %]" type="text/JAVASCRIPT"></script>
+	<script src="/js/server.js?[% version %]" type="text/JAVASCRIPT"></script>
+	<script src="/js/index_datatables.js?[% version %]" type="text/JAVASCRIPT"></script>
+
+</head>
+
+<body>
+
+	[% IF userlogged %]
+	<p id="nb">
+		<!-- <i class="fa fa-caret-right"></i>
+		<a href="./upload">Add Archives</a>
+		<span style="margin-left:5px"></span>
+		<i class="fa fa-caret-right"></i>
+		<a href="./batch">Batch Operations</a>
+		<span style="margin-left:5px"></span>
+		<i class="fa fa-caret-right"></i>
+		<a href="./config">Settings</a>
+		<span style="margin-left:5px"></span> -->
+		<i class="fa fa-caret-right"></i>
+		<a href="./config/categories">Modify Categories</a>
+		<span style="margin-left:5px"></span>
+		<i class="fa fa-caret-right"></i>
+		<a href="./stats">Statistics</a>
+		<!-- <i class="fa fa-caret-right"></i>
+		<a href="./logs">Logs</a> -->
+	</p>
+	[% ELSE %]
+	<p id="nb">
+		<i class="fa fa-caret-right"></i>
+		<a href="./login">Admin Login</a>
+		<span style="margin-left:5px"></span>
+		<i class="fa fa-caret-right"></i>
+		<a href="./stats">Statistics</a>
+	</p>
+	[% END %]
+
+	<div class='ido'>
+		<h1 class='ih'>[% motd %]</h1>
+		<div id='toppane'>
+			<div class='idi'>
+				<div id="category-container">
+					<!-- Categories go here -->
+				</div>
+				<input type='text' id='search-input' class='search stdinput' size='90' style='width:95%'
+					placeholder='Search Title, Artist, Series, Language or Tags' />
+				<input id='apply-search' class='searchbtn stdbtn' type='button' value='Apply Filter' />
+				<input id='clear-search' class='searchbtn stdbtn' type='button' value='Clear Filter' />
+			</div>
+
+			<ul class="collapsible index-carousel with-right-caret">
+				<li class="option-flyout"
+					style="text-align: left;display: flex;flex-wrap: wrap;justify-content: space-between;">
+					<div class="collapsible-title caret-right" style="display: flex;flex: 1 1 0;overflow: hidden;">
+						<i id="carousel-icon" class="fa"></i>
+						<div id="carousel-title"
+							style="display:inline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-left: 8px;"
+							title="Click to show archives from the current search with the specified filter">...</div>
+					</div>
+					<div class="collapsible-right">
+						<a class="fa fa-2x fa-sync-alt" style="margin-bottom: -4px; display:none" id="reload-carousel"
+							href="#" title="Refresh Selection"></a>
+						<a class="fa fa-2x fa-ellipsis-h" style="margin-bottom: -4px; margin-left: 12px"
+							id="carousel-mode-menu" href="#" title="Carousel Options"></a>
+					</div>
+
+					<div class="collapsible-body" style="flex: 1 0 100%;overflow: hidden;box-sizing: border-box;">
+						<div class="swiper index-carousel-container">
+							<a href="#" class="fa fa-3x fa-chevron-left carousel-prev"></a>
+							<a href="#" class="fa fa-3x fa-chevron-right carousel-next"></a>
+							<div class="swiper-wrapper"></div>
+							<div id="carousel-loading"
+								style="height: 344px; display:flex; justify-content: center; align-items: center;">
+								<i class="fa fa-4x fa-stroopwafel fa-spin"></i>
+							</div>
+							<div id="carousel-empty"
+								style="height: 344px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+								<i class="fa fa-4x fa-sad-cry"></i>
+								<span style="margin-top: 12px;">No
+									results here.</span>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+
+			<div class="table-options" style="display: none;">
+				<div class="thumbnail-options">Sort by:
+					<select class="favtag-btn" id="namespace-sortby">
+						<option selected value="title">Title</option>
+						<option selected value="date_added">Date</option>
+					</select>
+					<a class="fa fa-sort-alpha-down fa-2x table-option" id="order-sortby" href="#"
+						title="Sort Order"></a>
+
+					<input id="thumbnail-crop" class="fa table-option" type="checkbox"
+						title="If enabled, thumbnails that don't fit a regular A4 page will be cropped to only show the left side.">
+					<label for="thumbnail-crop" style="vertical-align: middle; padding-top:6px">Crop thumbnails</label>
+				</div>
+				<div style="margin-left:auto">Go to Page:
+					<select class="favtag-btn" id="page-select">
+					</select>
+					<a class="fa fa-list fa-2x mode-toggle thumbnail-toggle table-option" href="#"
+						title="Switch to Compact Mode"></a>
+					<a class="fa fa-table fa-2x mode-toggle compact-toggle table-option" href="#"
+						title="Switch to Thumbnail Mode"></a>
+				</div>
+			</div>
+
+			<table class="itg datatables">
+				<thead class="list" style="display: none;">
+					<tr>
+						<th id="titleheader">
+							<a>Title</a>
+						</th>
+						<th id="customheader1">
+							<i id="edit-header-1" class="fas fa-pencil-alt edit-header-btn"
+								title="Edit this column"></i>
+							<a id="header-1">Artist</a>
+						</th>
+						<th id="customheader2">
+							<i id="edit-header-2" class="fas fa-pencil-alt edit-header-btn"
+								title="Edit this column"></i>
+							<a id="header-2">Series</a>
+						</th>
+						<th id="tagsheader">
+							<a>Tags</a>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="list" style="display: none;">
+				</tbody>
+			</table>
+
+			<div id="json-error" style="display:none">
+				<h1 style="color: red">
+					<i class="fas fa-bomb"></i> I don't know everything, but I sure as hell know this database's busted
+					lads
+					<i class="fas fa-bomb"></i>
+				</h1>
+				<h2>The database cache is corrupt, and as such LANraragi is unable to display your archive list.</h2>
+			</div>
+
+		</div>
+	</div>
+
+	[% INCLUDE footer %]
+
+	<script>
+
+		// Last few remains of JS using server-provided data
+		jQuery(() => {
+
+			[% IF usingdefpass %]
+			//If the json has the "default password" flag, flash a friendly notification inviting the user to change his password
+			LRR.toast({
+				heading: 'You\'re using the default password and that\'s super baka of you',
+				text: '<a href="login">Login</a> with password "kamimamita" and <a href="config">change that shit</a> on the double.<br/>...Or just disable it! <br/>Why not check the configuration options afterwards, while you\'re at it? ',
+				icon: 'warning',
+				hideAfter: 25000,
+				closeOnClick: false,
+				draggable: false,
+			});
+			[% END %]
+
+			// Initialize context menu
+			$.contextMenu({
+				selector: '.context-menu',
+				build: ($trigger, e) => {
+					return {
+						callback: function (key, options) {
+							Index.handleContextMenu(key, $(this).attr("id"));
+						},
+						items: {
+							"read": { name: "Read", icon: "fas fa-book" },
+							"download": { name: "Download", icon: "fas fa-save" },
+							[% IF userlogged %]
+							"sep1": "---------",
+							"edit": { name: "Edit Metadata", icon: "fas fa-pencil-alt" },
+							"delete": { name: "Delete", icon: "fas fa-trash-alt" },
+							"category": {
+								"name": "Add to Category",
+								"icon": "fas fa-search-plus",
+								"items": {
+									[% IF categories.size > 0 %][% FOREACH categories %]
+									"category-[% id %]": { "name": "[% name %]", "icon": "fas fa-stream" },
+									[% END %][% ELSE %]
+								"noop": { "name": "No Categories yet...", "icon": "fas fa-ghost" }
+									[% END %]
+								}
+							},
+							"categoryremove": {
+								"name": "Remove from Category",
+								"icon": "fas fa-search-minus",
+								"items": Index.loadContextMenuCategories($trigger.attr("id"))
+							}
+							[% END %]
+						}
+					}
+				}
+			});
+		});
+	</script>
+
+	<div id="overlay-shade"> </div>
+
+	<div id="updateOverlay" class="id1 base-overlay small-overlay" style="display:none">
+		<h2 class="ih" style="text-align:center">New Version Release Notes</h2>
+		<div id="changelog"></div>
+	</div>
+
+
+</body>
+
+</html>

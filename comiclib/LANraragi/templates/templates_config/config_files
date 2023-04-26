@@ -1,0 +1,105 @@
+<tr>
+    <td class="option-td">
+        <h2 class="ih"> Archive Directory </h2>
+    </td>
+    <td class="config-td">
+        <input class="stdinput" style="width:100%" maxlength="255" size="20" value="[% dirname %]" name="dirname"
+            type="text" [% IF forceddirname %] disabled title="This option is enforced by an environment variable." [%
+            END %]>
+        <br> Directory where the archives will be located. It will be created if it doesn't exist.
+        <br>Make sure the OS user running LANraragi has read access to this directory. <br>
+    </td>
+</tr>
+
+<tr>
+    <td class="option-td">
+        <h2 class="ih"> Synology eCryptFS Compatibility Mode </h2>
+    </td>
+    <td class="config-td">
+        [% IF enablecryptofs %]
+        <input id="enablecryptofs" name="enablecryptofs" class="fa" type="checkbox" checked> [% ELSE %]
+        <input id="enablecryptofs" name="enablecryptofs" class="fa" type="checkbox"> [% END %]
+        <label for="enablecryptofs">
+            <br>If enabled, LANraragi will cutoff archive filenames to 143 bytes, which is the max accepted by eCryptFS.
+        </label>
+    </td>
+</tr>
+
+<tr></tr>
+
+<tr>
+    <td class="option-td">
+        <input id="rescan-button" class='stdbtn' type='button' value='Rescan Archive Directory' />
+    </td>
+    <td class="config-td">
+        Click this button to trigger a rescan of the Archive Directory in case you're missing files, <br>
+        or some data such as total page counts. <br>
+        <br>
+    </td>
+</tr>
+
+<tr>
+    <td class="option-td">
+        <h2 class="ih"> Maximum <br>Temporary Folder Size </h2>
+    </td>
+    <td class="config-td">
+        <input class="stdinput" style="width:100%" maxlength="255" size="20" value="[% tempmaxsize %]"
+            name="tempmaxsize" type="text">
+        <br>In MBs. The temporary folder contains recently opened archives, for faster subsequent reading. <br>
+        It is automatically emptied when it grows past this specified size.
+    </td>
+</tr>
+
+<tr>
+    <td class="option-td">
+        <input id='clean-temp' class='stdbtn' type='button' value='Clean Temporary Folder' />
+    </td>
+    <td class="config-td">
+        Current Size:
+        <h2 style="display:inline"><span id="tempsize"> [%tempsize%] </span> MBs </h2>
+        <br>Empty the temporary folder manually by clicking this button.
+    </td>
+</tr>
+
+<tr></tr>
+
+<tr>
+    <td class="option-td">
+        <input id='reset-search-cache' class='stdbtn' type='button' value='Reset Search Cache' />
+    </td>
+    <td class="config-td">
+        The last searches done in the archive index are cached for faster loads. <br>
+        If something went wrong with said cache, you can reset it by clicking this button. <br>
+        <br>
+    </td>
+</tr>
+
+<tr></tr>
+
+<tr>
+    <td class="option-td">
+        <input id='clear-new-tags' class='stdbtn' type='button' value='Clear NEW flags' />
+    </td>
+    <td class="config-td">
+        Newly uploaded archives are marked as "new" in the index until you've opened them. <br>
+        If you want to clear those flags, click this button. <br>
+        <br>
+    </td>
+</tr>
+
+<tr>
+    <td class="option-td">
+        <h2 class="ih">Replace duplicated archives</h2>
+    </td>
+    <td class="config-td">
+        [% IF replacedupe %]
+        <input id="replacedupe" name="replacedupe" class="fa" type="checkbox" checked> [% ELSE %]
+        <input id="replacedupe" name="replacedupe" class="fa" type="checkbox"> [% END %]
+        <label for="replacedupe">
+            <br>If enabled, LANraragi will overwrite old archives when a newer one (with the same name) is uploaded
+            through the Web Uploader or the Download System.
+            <br> <i class="fas fa-exclamation-triangle" style="color:red"></i> This will delete metadata for old files
+            when they're replaced! Use with caution.
+        </label>
+    </td>
+</tr>

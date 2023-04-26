@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<head>
+	<title>LANraragi Server Error</title>
+
+	<meta name="viewport" content="width=device-width" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<link type="image/png" rel="icon" href="favicon.ico" />
+</head>
+
+<body style='background: none repeat scroll 0% 0% brown; color: white; font-family: sans-serif; text-align: center'>
+
+	<img src='/img/flubbed.gif' />
+	<br />
+	<h2>I flubbed it while rendering your page!</h2>
+	It's likely there's a bug with the server at this point.<br />
+	<p>
+		<%= $exception->message %>
+	</p>
+
+	<h3>Some more info below if available:</h3>
+	<pre><%= dumper $snapshot %></pre>
+
+</body>
+
+</html>
