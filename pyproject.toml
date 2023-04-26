@@ -44,5 +44,5 @@ comicscan = "comiclib.scan:scannow"
 "Homepage" = "https://github.com/comiclib/comiclib"
 "Bug Tracker" = "https://github.com/comiclib/comiclib/issues"
 
-[tool.setuptools]
-packages = ["comiclib"]
+[tool.setuptools.package-data]
+comiclib = ["**/*"]
