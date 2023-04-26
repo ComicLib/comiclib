@@ -37,7 +37,7 @@ COMICLIB_LOCATION=/home/user/mycomics comiclib
 ## Modify the bound port or IP address
 Instead of run `comiclib` directly, run with the following command
 ```
-uvicorn main:app --host 0.0.0.0 --port 80
+uvicorn comiclib.main:app --host 0.0.0.0 --port 80
 ```
 where `--host 0.0.0.0` specifies the bound IP (`0.0.0.0` enables LAN access), and `--port 80` specifies the bound port.
 

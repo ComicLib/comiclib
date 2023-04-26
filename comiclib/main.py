@@ -420,11 +420,12 @@ def delete_category(id: str, db: Session = Depends(get_db)):
 
 @app.put("/api/categories/{id}/{archive}")
 def add_archive_to_category(id: str, archive: str, db: Session = Depends(get_db)):
-    a = db.get(Archive, id)
+    a = db.get(Archive, archive)
     c = db.get(Category, id)
     if a is None or c is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
     a.categories.append(c)
+    db.commit()
     return {
         "operation": "add_to_category",
         "success": 1,
@@ -434,11 +435,12 @@ def add_archive_to_category(id: str, archive: str, db: Session = Depends(get_db)
 
 @app.delete("/api/categories/{id}/{archive}")
 def remove_archive_from_category(id: str, archive: str, db: Session = Depends(get_db)):
-    a = db.get(Archive, id)
+    a = db.get(Archive, archive)
     c = db.get(Category, id)
     if a is None or c is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
     a.categories.remove(c)
+    db.commit()
     return {
         "operation": "remove_from_category",
         "success": 1
@@ -523,8 +525,9 @@ def favicon():
 @app.get("/{path}", response_class=HTMLResponse)
 @app.get("/config/{path}", response_class=HTMLResponse)
 def read_template(request: Request, path: str, id: Union[str, None] = None, csshead: str = Depends(csshead), db: Session = Depends(get_db)):
-    vars = {"csshead": csshead, "id": id,
-            "userlogged": True, "categories": []}
+    vars = {"csshead": csshead, "id": id, "userlogged": True}
+    if path == "index":
+        vars["categories"] = [{"id": c.id, "name": c.name} for c in db.scalars(select(Category).where(Category.search.is_(None)))]
     if path == "categories":
         path = "category"
     if path == "edit" and not (a := db.get(Archive, id)) is None:

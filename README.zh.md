@@ -37,7 +37,7 @@ CONTENT=/home/user/mycomics comiclib
 ## 修改绑定的端口或IP地址
 使用以下命令运行而不是直接运行 `comiclib`
 ```
-uvicorn main:app --host 0.0.0.0 --port 80
+uvicorn comiclib.main:app --host 0.0.0.0 --port 80
 ```
 其中`--host 0.0.0.0`指定绑定的IP（`0.0.0.0`可使局域网访问），`--port 80`指定了绑定的端口。
 
