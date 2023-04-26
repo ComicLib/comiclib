@@ -20,6 +20,9 @@ from fastapi.staticfiles import StaticFiles
 
 from template import Template
 
+if not (Path(__file__).parent / 'LANraragi/public/js/vendor/jquery.min.js').exists():
+    from . import frontend_boost
+
 from .database import engine, Base, Archive, Tag, Category
 from sqlalchemy import func, select, or_, update, delete
 from sqlalchemy.orm import Session

@@ -23,7 +23,8 @@ dependencies = [
     'pillow',
     'Template-Toolkit-Python ; python_version < "3.10"',
     'Template-Toolkit-Python@git+https://github.com/URenko/Template-Toolkit-Python.git ; python_version >= "3.10"',
-    'watchfiles'
+    'watchfiles',
+    'requests'
 ]
 
 [project.optional-dependencies]
