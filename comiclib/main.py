@@ -520,11 +520,6 @@ def login(password: str):
     return
 
 
-@app.get("/favicon.ico")
-def favicon():
-    return FileResponse(app_path / "LANraragi/public/favicon.ico")
-
-
 @app.get("/{path}", response_class=HTMLResponse)
 @app.get("/config/{path}", response_class=HTMLResponse)
 def read_template(request: Request, path: str, id: Union[str, None] = None, csshead: str = Depends(csshead), db: Session = Depends(get_db)):
