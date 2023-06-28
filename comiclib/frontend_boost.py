@@ -1,29 +1,39 @@
 import tarfile, io, shutil
 from pathlib import Path
 import requests
-s = requests.session()
 
 dependencies = {
-        "@fortawesome/fontawesome-free": "6.2.1",
-        "@jcubic/tagger": "0.4.2",
-        "allcollapsible": "1.1.0",
-        "awesomplete": "1.1.5",
-        "blueimp-file-upload": "10.32.0",
-        "clsx": "1.1.1",
-        "datatables.net": "1.11.5",
-        "fscreen": "1.2.0",
-        "inter-ui": "3.19.3",
-        "jqcloud2": "2.0.3",
-        "jquery": "3.6.0",
-        "jquery-contextmenu": "2.9.2",
-        "marked": "4.0.14",
-        "open-sans-fontface": "1.4.0",
-        "preact": "10.7.1",
-        "react-toastify": "9.0.0-rc-2",
-        "roboto-fontface": "0.8.0",
-        "sweetalert2": "11.4.10",
-        "swiper": "8.4.5",
-        "tippy.js": "6.3.7"
+        '@fortawesome/fontawesome-free': '6.4.0',
+        '@jcubic/tagger': '0.4.4',
+        '@popperjs/core': '2.11.7',
+        'allcollapsible': '1.1.0',
+        'awesomplete': '1.1.5',
+        'blueimp-canvas-to-blob': '3.29.0',
+        'blueimp-file-upload': '10.32.0',
+        'blueimp-load-image': '5.16.0',
+        'blueimp-tmpl': '3.20.0',
+        'clsx': '1.2.1',
+        'datatables.net': '1.13.4',
+        'dom7': '4.0.6',
+        'fscreen': '1.2.0',
+        'inter-ui': '3.19.3',
+        'jqcloud2': '2.0.3',
+        'jquery': '3.6.4',
+        'jquery-contextmenu': '2.9.2',
+        'js-tokens': '4.0.0',
+        'loose-envify': '1.4.0',
+        'marked': '4.3.0',
+        'open-sans-fontface': '1.4.0',
+        'preact': '10.13.2',
+        'react': '18.2.0',
+        'react-dom': '18.2.0',
+        'react-toastify': '9.1.2',
+        'roboto-fontface': '0.8.0',
+        'scheduler': '0.23.0',
+        'ssr-window': '4.0.2',
+        'sweetalert2': '11.7.3',
+        'swiper': '8.4.7',
+        'tippy.js': '6.3.7'
     }
 
 vendor_css = (
@@ -60,18 +70,23 @@ vendor_woff = (
     "inter-ui/Inter (web)/Inter-Bold.woff",
 )
 
-print('Downloading front-end files, this is done only once')
+vendor_version = 0
+version_file = Path(__file__).parent / 'LANraragi/public/version'
+if not version_file.exists() or int(version_file.read_text()) < vendor_version:
+    print('Installing/updating front-end files...')
 
-for name in dependencies:
-    print('downloading', name)
-    r = s.get(f"https://registry.npmjs.com/{name}/-/{name.rpartition('/')[-1]}-{dependencies[name]}.tgz", allow_redirects=True)
-    r.raise_for_status()
-    with tarfile.open(fileobj=io.BytesIO(r.content), mode='r:gz') as t:
-        for vendors, v_path in [(vendor_css, 'css/vendor'), (vendor_js, 'js/vendor'), (vendor_woff, 'css/webfonts')]:
-            for v in vendors:
-                if v.startswith(name+'/'):
+    s = requests.session()
+    for name in dependencies:
+        print('downloading', name)
+        r = s.get(f"https://registry.npmjs.com/{name}/-/{name.rpartition('/')[-1]}-{dependencies[name]}.tgz", allow_redirects=True)
+        r.raise_for_status()
+        with tarfile.open(fileobj=io.BytesIO(r.content), mode='r:gz') as t:
+            for vendors, v_path in [(vendor_css, 'css/vendor'), (vendor_js, 'js/vendor'), (vendor_woff, 'css/webfonts')]:
+                for v in filter(lambda v:v.startswith(name+'/'), vendors):
                     path = v.removeprefix(name)
                     src = t.extractfile('package'+path)
                     to_path = Path(__file__).parent / 'LANraragi/public' / v_path / Path(v).name
                     to_path.parent.mkdir(parents=True, exist_ok=True)
                     to_path.write_bytes(src.read())
+    shutil.copyfile(Path(__file__).parent / 'LANraragi/public/css/vendor/all.min.css', Path(__file__).parent / 'LANraragi/public/css/vendor/fontawesome-all.min.css')
+    version_file.write_text(str(vendor_version))
