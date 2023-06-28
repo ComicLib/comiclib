@@ -31,7 +31,7 @@ Now you can open http://127.0.0.1:8000 and start reading.
 The default scan location is the current working directory, which can be specified via the environment variable `CONTENT`.
 For example, you can add it before the command
 ```
-COMICLIB_LOCATION=/home/user/mycomics comiclib
+CONTENT=/home/user/mycomics comiclib
 ```
 
 ## Modify the bound port or IP address
