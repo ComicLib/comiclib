@@ -347,14 +347,15 @@ def clean_all_new_flag(db: Session = Depends(get_db)):
 @app.get("/api/categories")
 def get_all_categories(db: Session = Depends(get_db)):
     return [
-        {"archives": [a.id for a in c.archive], "id": c.id, "last_used": 0,
-            "name": c.name, "pinned": c.pinned, "search": c.search}
+        {"archives": [a.id for a in c.archive], "id": str(c.id), "last_used": 0,
+            "name": c.name, "pinned": "1" if c.pinned else "0", "search": "" if c.search is None else c.search}
         for c in db.scalars(select(Category))
     ]
 
 
 @app.put("/api/categories")
 def create_category(name: str, pinned: bool = False, search: Union[str, None] = None, db: Session = Depends(get_db)):
+    if len(search) == 0: search = None
     c = Category(name=name, pinned=pinned, search=search)
     db.add(c)
     db.commit()
@@ -386,9 +387,9 @@ def update_category(id: str, name: Union[str, None], search: Union[str, None] = 
         stmt = stmt.values(name=name)
     if search:
         stmt = stmt.values(search=search)
-    if pinned:
-        stmt = stmt.values(pinned=pinned)
+    stmt = stmt.values(pinned=pinned)
     db.execute(stmt)
+    db.commit()
     return {
         "category_id": id,
         "operation": "update_category",
@@ -399,6 +400,7 @@ def update_category(id: str, name: Union[str, None], search: Union[str, None] = 
 @app.delete("/api/categories/{id}")
 def delete_category(id: str, db: Session = Depends(get_db)):
     db.execute(delete(Category).where(Category.id == id))
+    db.commit()
     return {
         "operation": "delete_category",
         "success": 1
@@ -512,6 +514,8 @@ def read_template(request: Request, path: str, id: Union[str, None] = None, cssh
         vars["categories"] = [{"id": c.id, "name": c.name} for c in db.scalars(select(Category).where(Category.search.is_(None)))]
     if path == "categories":
         path = "category"
+        vars["arclist"] = ''.join([f"<li><input type='checkbox' name='archive' id='{a.id}' class='archive' onchange='Category.updateArchiveInCategory(this.id, this.checked)'>" + \
+                                   f"<label for='{a.id}'> {a.title}</label></li>" for a in db.scalars(select(Archive))])
     if path == "edit" and not (a := db.get(Archive, id)) is None:
         vars["file"] = a.path
         vars["arctitle"] = a.title

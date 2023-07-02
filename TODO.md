@@ -1,6 +1,3 @@
-## Category page
-`/config/categories`
-
 ## Dynamic categories
 
 ## i18n
