@@ -17,7 +17,7 @@ Currently only support matching by the source URL (from previous scaners).'''
         else:
             self.con = None
     
-    async def scan(self, path: Path, metadata: dict, prev_scaners: list[str]) -> bool:
+    async def scan(self, id: str, path: Path, metadata: dict, prev_scaners: list[str]) -> bool:
         if self.con is None:
             return False
         elif metadata["source"] is None:

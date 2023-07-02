@@ -35,6 +35,7 @@ class Archive(Base):
     source: Mapped[Optional[str]]
     path: Mapped[str]
     pagecount: Mapped[int]
+    thumb: Mapped[str]
 
     tags: Mapped[list["Tag"]] = relationship(
         back_populates="archive", cascade="all, delete-orphan")

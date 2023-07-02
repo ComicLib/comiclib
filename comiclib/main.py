@@ -1,5 +1,6 @@
 from .scan import watch, scan
 from .config import settings
+from .utils import extract_thumbnail
 from typing import Union, Annotated
 from enum import Enum
 from pathlib import Path
@@ -7,12 +8,6 @@ from zipfile import ZipFile
 import re
 import asyncio
 from urllib.parse import quote, unquote
-
-from PIL import Image
-try:
-    from jxlpy import JXLImagePlugin
-except ModuleNotFoundError:
-    pass
 
 from fastapi import FastAPI, Cookie, Request, Query, Depends, BackgroundTasks, Response, status, Form
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, JSONResponse, RedirectResponse
@@ -196,30 +191,15 @@ def get_archive_categories(id: str, db: Session = Depends(get_db)):
     }
 
 
-def extract_thumbnail(path: Union[str, Path], id: str, page: int, saveto: Path):
-    path = Path(path)
-    saveto.parent.mkdir(parents=True, exist_ok=True)
-    if path.is_dir():
-        raise NotImplementedError
-    elif path.suffix == '.zip':
-        with ZipFile(path) as z:
-            with z.open(list(filter(lambda z_info: not z_info.is_dir(), z.infolist()))[page-1].filename) as f, Image.open(f) as im:
-                im.thumbnail((500, 709))
-                im.save(saveto)
-    else:
-        raise NotImplementedError
-
-
 @app.get("/api/archives/{id}/thumbnail")
 def get_archive_thumbnail(id: str, background_tasks: BackgroundTasks, response: Response, page: Union[int, None] = None, db: Session = Depends(get_db)):
-    thumb_path = Path(
-        'thumb') / (id+'.webp') if page is None else Path('thumb') / id / f'{page}.webp'
-    if thumb_path.exists():
-        return FileResponse(thumb_path)
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    extract_thumbnail(a.path, id, 1 if page is None else page, thumb_path)
+    thumb_path = Path(a.thumb)
+    db.close()
+    if not page in (None, 1):
+        thumb_path = extract_thumbnail(a.path, id, page, cache=True)
     return FileResponse(thumb_path)
 
 
@@ -228,8 +208,7 @@ def update_thumbnail(id: str, page: int = 1, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    thumb_path = Path('thumb') / (id+'.webp')
-    extract_thumbnail(a.path, a.id, page, thumb_path)
+    extract_thumbnail(a.path, a.id, page)
     return {
         "operation": "update_thumbnail",
         "success": 1,

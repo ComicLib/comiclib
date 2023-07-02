@@ -40,7 +40,7 @@ async def scan(paths):
             prev_scaners = []
             for scaner, name in scaners:
                 prev_metadata = copy.deepcopy(metadata)
-                if await scaner.scan(p, metadata, prev_scaners):
+                if await scaner.scan(p, archive_id, metadata, prev_scaners):
                     prev_scaners.append(name)
                 else:
                     metadata = prev_metadata
@@ -51,6 +51,7 @@ async def scan(paths):
             a.subtitle = metadata["subtitle"]
             a.source = metadata["source"]
             a.pagecount = metadata["pagecount"]
+            a.thumb = metadata["thumb"]
             for tag in filter(lambda t: not t.tag in metadata["tags"], a.tags):
                 a.tags.remove(tag)
             for tag in metadata["tags"] - set(t.tag for t in a.tags):

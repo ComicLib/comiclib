@@ -31,8 +31,6 @@ dependencies = [
 full = [
     "uvicorn[standard]",
     'tld',
-    'jxlpy ; python_version < "3.10"',
-    'jxlpy@git+https://github.com/olokelo/jxlpy.git ; python_version >= "3.11"',
     'charset_normalizer'
 ]
 
