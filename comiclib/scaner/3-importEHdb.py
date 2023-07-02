@@ -24,10 +24,11 @@ Currently only support matching by the source URL (from previous scaners).'''
             return False
         elif not (m := re.match(r"https?://e[x-]hentai\.org/g/(\d+)/", metadata["source"])) is None:
             print(f' -> importEHdb get {path}')
-            res = self.con.execute("SELECT title, title_jpn, category, artist, `group`, parody, character, female, male, language, mixed, other, cosplayer, rest FROM gallery WHERE gid == ?", (m[1],)).fetchone()
+            res = self.con.execute("SELECT title, title_jpn, category, thumb, artist, `group`, parody, character, female, male, language, mixed, other, cosplayer, rest FROM gallery WHERE gid == ?", (m[1],)).fetchone()
             if res is None: return False
             metadata["title"] = res.pop("title")
             metadata["subtitle"] = res.pop("title_jpn")
+            metadata["thumb"] = res.pop("thumb")
             metadata["categories"] = set((res.pop("category"),))
             metadata["tags"] = set()
             for namespace in res:
