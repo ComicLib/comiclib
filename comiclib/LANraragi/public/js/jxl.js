@@ -9,21 +9,31 @@
     imageType: 'jpeg' // jpeg/png/webp
   };
 
-  let cache, workers = {};
+  let cache;
+
+  function init() {
+    document.body && document.body.querySelectorAll('*').forEach(check);
+    new MutationObserver(mutations => mutations.forEach(check)).observe(document.documentElement, {subtree: true, attributes: true});
+  }
+
+  function check(mutation) {
+    let el = mutation.target;
+    if (el instanceof HTMLImageElement && el.src.endsWith('.jxl')){
+      if (el.complete && el.naturalHeight === 0)
+        decode(el, false, false);
+      else
+        el.onerror = () => decode(el, false);
+    }
+    else if (el instanceof HTMLSourceElement && el.srcset.endsWith('.jxl'))
+      decode(el, false, true);
+    else if (el instanceof Element && getComputedStyle(el).backgroundImage.endsWith('.jxl")'))
+      decode(el, true, false);
+  }
 
   function imgDataToDataURL(img, imgData, isCSS, isSource) {
     const jxlSrc = img.dataset.jxlSrc;
     if (imgData instanceof Blob) {
       dataURLToSrc(img, URL.createObjectURL(imgData), isCSS, isSource);
-    } else if ('OffscreenCanvas' in window) {
-      const canvas = new OffscreenCanvas(imgData.width, imgData.height);
-      workers[jxlSrc].postMessage({canvas, imgData, imageType: config.imageType}, [canvas]);
-      workers[jxlSrc].addEventListener('message', m => {
-        if (m.data.url && m.data.blob) {
-          dataURLToSrc(img, m.data.url, isCSS, isSource);
-          config.useCache && cache && cache.put(jxlSrc, new Response(m.data.blob));
-        }
-      });
     } else {
       const canvas = document.createElement('canvas');
       canvas.width = imgData.width;
@@ -65,19 +75,104 @@
       }
     }
     const res = await fetch(jxlSrc);
-    const image = await res.arrayBuffer();
-    workers[jxlSrc] = new Worker('js/jxl_dec.js');
-    workers[jxlSrc].postMessage({jxlSrc, image});
-    workers[jxlSrc].addEventListener('message', m => m.data.imgData && requestAnimationFrame(() => imgDataToDataURL(img, m.data.imgData, isCSS, isSource)));
+    requestAnimationFrame(() => process(res, img, isCSS, isSource));
+  }
+  
+  async function process(res, img, isCSS, isSource) {
+    let module, decoder, buffer, reader, timer;
+    const bufferSize = 256 * 1024;
+
+    function readChunk() {
+      reader.read().then(onChunk, onError);
+    }
+
+    function onChunk(chunk) {
+      if (chunk.done) {
+        onFinish();
+        return;
+      }
+      let offset = 0;
+      while (offset < chunk.value.length) {
+        let delta = chunk.value.length - offset;
+        if (delta > bufferSize)
+          delta = bufferSize;
+        module.HEAP8.set(chunk.value.slice(offset, offset + delta), buffer);
+        offset += delta;
+        if (!processChunk(delta))
+          onError('Processing error');
+      }
+      setTimeout(readChunk, 0);
+    }
+
+    function processChunk(chunkLen) {
+      const result = processInput(chunkLen);
+      if (result.error)
+        return false;
+      if (result.wantFlush)
+        module._jxlFlush(decoder);
+      if (result.copyPixels) {
+        let width = module.HEAP32[decoder >> 2];
+        let height = module.HEAP32[(decoder + 4) >> 2];
+        let start = module.HEAP32[(decoder + 8) >> 2];
+        let end = start + width * height * 4;
+        let src = new Uint8Array(module.HEAP8.buffer);
+        let imgData = new ImageData(new Uint8ClampedArray(src.slice(start, end)), width, height);
+        requestAnimationFrame(() => imgDataToDataURL(img, imgData, isCSS, isSource));
+      }
+      return true;
+    }
+
+    function processInput(chunkLen) {
+      const response = {
+        error: false,
+        wantFlush: false,
+        copyPixels: false
+      };
+      timer = timer || performance.now();
+      let result = module._jxlProcessInput(decoder, buffer, chunkLen);
+      if (result === 2) {
+          // More input needed
+      } else if (result === 1) {
+        response.wantFlush = true;
+        response.copyPixels = true;
+      } else if (result === 0) {
+        console.log('Finished decoding', img.dataset.jxlSrc, 'in', performance.now() - timer, 'ms');
+        response.wantFlush = false;
+        response.copyPixels = true;
+      } else {
+        response.error = true;
+      }
+      return response;
+    }
+
+    function onError(data) {
+      console.error(data);
+      onFinish();
+    }
+
+    function onFinish() {
+      if (module) {
+        module._jxlDestroyInstance(decoder);
+        module._free(buffer);
+      }
+      module = decoder = buffer = undefined;
+    }
+
+    module = await JxlCodecModule();
+    decoder = module._jxlCreateInstance(true, 100);
+    if (decoder < 4)
+      return onError('Cannot create decoder');
+    buffer = module._malloc(bufferSize);
+    reader = res.body.getReader();
+    readChunk();
   }
 
-  new MutationObserver(mutations => mutations.forEach(mutation => {
-    let el = mutation.target;
-    if (el instanceof HTMLImageElement && el.src.endsWith('.jxl'))
-      el.onerror = () => decode(el, false, false);
-    else if (el instanceof HTMLSourceElement && el.srcset.endsWith('.jxl'))
-      decode(el, false, true);
-    else if (el instanceof Element && getComputedStyle(el).backgroundImage.endsWith('.jxl")'))
-      decode(el, true, false);
-  })).observe(document.documentElement, {subtree: true, attributes: true});
+  if (!window.crossOriginIsolated)
+    throw 'No COOP/COEP response headers';
+
+  const isSimd = WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253, 15, 253, 98, 11]));
+  const script = document.createElement('script');
+  script.src = isSimd ? 'js/jxl_decoder_simd.min.js' : 'js/jxl_decoder.min.js';
+  script.onload = init;
+  document.head.appendChild(script);
 }());

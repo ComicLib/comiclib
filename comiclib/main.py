@@ -7,7 +7,7 @@ from pathlib import Path
 from zipfile import ZipFile
 import re
 import asyncio
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urlparse
 
 from fastapi import FastAPI, Cookie, Request, Query, Depends, BackgroundTasks, Response, status, Form
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, JSONResponse, RedirectResponse
@@ -30,6 +30,13 @@ app.mount("/img", StaticFiles(directory=app_path / "LANraragi/public/img"))
 app.mount("/js", StaticFiles(directory=app_path / "LANraragi/public/js"))
 app.mount("/themes", StaticFiles(directory=app_path / "LANraragi/public/themes"))
 
+@app.middleware("http")
+async def add_COEPCOOP(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path == '/reader' or (request.headers.get("referer") and urlparse(request.headers["referer"]).path == '/reader'):
+        response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
+        response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+    return response
 
 @app.on_event('startup')
 async def app_startup():

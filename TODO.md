@@ -23,7 +23,7 @@ Maybe multi-user?
 ## Plugin exception handling
 
 ## Better JPEG XL support
-jxl.js with SIMD support and preload.
+Server-side decode
 
 ## Other formats
 EPUB...
