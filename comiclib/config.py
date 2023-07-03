@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     debug: bool = False
     skip_exits: bool = True
     content: str = '.'
+    thumb: str = './thumb'
 
 
 settings = Settings()

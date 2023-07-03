@@ -16,9 +16,9 @@ from .config import settings
 
 def extract_thumbnail(path: Union[str, Path], id: str, page: int, cache=False) -> Path:
     path = Path(path)
-    saveto = Path('thumb') / (id+'.webp') if page == 1 else Path('thumb') / id / f'{page}.webp'
+    saveto = Path(settings.thumb) / (id+'.webp') if page == 1 else Path(settings.thumb) / id / f'{page}.webp'
     if cache and saveto.exists():
-        return saveto
+        return saveto.relative_to(settings.thumb)
     saveto.parent.mkdir(parents=True, exist_ok=True)
     if path.is_dir():
         raise NotImplementedError
@@ -39,6 +39,6 @@ def extract_thumbnail(path: Union[str, Path], id: str, page: int, cache=False) -
                         # if not (returncode := await proc.wait()) == 0:
                         #     raise subprocess.CalledProcessError(returncode, cmd)
                         subprocess.run(cmd, check=True, stderr=None if settings.debug else subprocess.DEVNULL)
-        return saveto
+        return saveto.relative_to(settings.thumb)
     else:
         raise NotImplementedError

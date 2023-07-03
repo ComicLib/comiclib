@@ -23,7 +23,10 @@ for p in sorted((Path(__file__).parent / 'scaner').glob('*.py')):
 
 async def scan(paths):
     with Session(engine) as db:
-        for p in map(Path, paths):  # TODO: https://github.com/python/cpython/issues/77609
+        for p in paths:  # TODO: https://github.com/python/cpython/issues/77609
+            p = Path(p).resolve().relative_to(Path(settings.content).resolve())
+            if p.is_relative_to('thumb'):
+                continue
             old_a = db.scalar(select(Archive).where(
                 Archive.path == p.as_posix()))
             if old_a is None:
@@ -40,7 +43,7 @@ async def scan(paths):
             prev_scaners = []
             for scaner, name in scaners:
                 prev_metadata = copy.deepcopy(metadata)
-                if await scaner.scan(p, archive_id, metadata, prev_scaners):
+                if await scaner.scan(Path(settings.content) / p, archive_id, metadata, prev_scaners):
                     prev_scaners.append(name)
                 else:
                     metadata = prev_metadata

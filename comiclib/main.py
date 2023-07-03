@@ -208,9 +208,9 @@ def get_archive_thumbnail(id: str, background_tasks: BackgroundTasks, response: 
         if a.thumb.startswith('http'):
             return RedirectResponse(a.thumb)
         else:
-            thumb_path = Path(a.thumb)
+            thumb_path = Path(settings.thumb) / a.thumb
     else:
-        thumb_path = extract_thumbnail(a.path, id, page, cache=True)
+        thumb_path = Path(settings.thumb) / extract_thumbnail(Path(settings.content) / a.path, id, page, cache=True)
     return FileResponse(thumb_path)
 
 
@@ -219,7 +219,7 @@ def update_thumbnail(id: str, page: int = 1, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    thumb_path = extract_thumbnail(a.path, a.id, page)
+    thumb_path = extract_thumbnail(Path(settings.content) / a.path, a.id, page)
     a.thumb = str(thumb_path)
     db.commit()
     return {
@@ -234,7 +234,7 @@ def download_archive(id: str, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    return FileResponse(a.path)
+    return FileResponse(Path(settings.content) / a.path)
 
 
 @app.get("/api/archives/{id}/files")
@@ -242,7 +242,7 @@ def extract_archive(id: str, force: bool, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    path = Path(a.path)
+    path = Path(settings.content) / a.path
     if path.suffix == '.zip':
         with ZipFile(path) as z:
             pages = [f"./api/archives/{id}/page?path="+quote(z_info.filename, safe='') for z_info in filter(
@@ -257,7 +257,7 @@ def get_archive_page(id: str, path: str, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    p = Path(a.path)
+    p = Path(settings.content) / a.path
     path = unquote(path)
     if p.suffix == '.zip':
         def iterfile():
@@ -293,7 +293,7 @@ def delete_archive(id: str, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    p = Path(a.path)
+    p = Path(settings.content) / a.path
     if p.is_file():
         p.unlink()
     else:
@@ -321,7 +321,7 @@ def get_statistics(minweight: int = 1, db: Session = Depends(get_db)):
 def clean_database(db: Session = Depends(get_db)):
     deleted = 0
     for id, path in db.execute(select(Archive.id, Archive.path)):
-        path = Path(path)
+        path = Path(settings.content) / path
         if path.exists():
             continue
         db.execute(delete(Archive).where(Archive.id == id))
