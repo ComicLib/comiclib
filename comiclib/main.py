@@ -517,7 +517,7 @@ def login(password: str):
 @app.get("/config/{path}", response_class=HTMLResponse)
 def read_template(request: Request, path: str, id: Union[str, None] = None, csshead: str = Depends(csshead), db: Session = Depends(get_db)):
     vars = {"csshead": csshead, "id": id, "userlogged": True}
-    if path == "index":
+    if path in ("index", "reader"):
         vars["categories"] = [{"id": c.id, "name": c.name} for c in db.scalars(select(Category).where(Category.search.is_(None)))]
     if path == "categories":
         path = "category"
