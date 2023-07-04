@@ -14,6 +14,25 @@ except ModuleNotFoundError:
 
 from .config import settings
 
+def convert_image(f_or_path, saveto: str, thumbnail=False):
+    try:
+        with Image.open(f_or_path) as im:
+            if thumbnail:
+                im.thumbnail((500, 709))
+            im.save(saveto)
+    except PIL.UnidentifiedImageError:
+        if not isinstance(f_or_path, Path):
+            with tempfile.NamedTemporaryFile() as tmpf:  # libjxl has problem with pipe yet
+                f_or_path.seek(0)
+                shutil.copyfileobj(f_or_path, tmpf)
+                tmpf.flush()
+                cmd = ['ffmpeg', '-i', tmpf.name, '-vf', 'scale=500:-1', str(saveto), '-y'] if thumbnail else ['ffmpeg', '-i', tmpf.name, str(saveto), '-y']
+                subprocess.run(cmd, check=True, stderr=None if settings.debug else subprocess.DEVNULL)
+        else:
+            cmd = ['ffmpeg', '-i', str(f_or_path), '-vf', 'scale=500:-1', str(saveto), '-y'] if thumbnail else ['ffmpeg', '-i', str(f_or_path), str(saveto), '-y']
+            subprocess.run(cmd, check=True, stderr=None if settings.debug else subprocess.DEVNULL)
+
+
 def extract_thumbnail(path: Union[str, Path], id: str, page: int, cache=False) -> Path:
     path = Path(path)
     saveto = Path(settings.thumb) / (id+'.webp') if page == 1 else Path(settings.thumb) / id / f'{page}.webp'
@@ -25,20 +44,7 @@ def extract_thumbnail(path: Union[str, Path], id: str, page: int, cache=False) -
     elif path.suffix == '.zip':
         with ZipFile(path) as z:
             with z.open(list(filter(lambda z_info: not z_info.is_dir(), z.infolist()))[page-1].filename) as f:
-                try:
-                    with Image.open(f) as im:
-                        im.thumbnail((500, 709))
-                        im.save(saveto)
-                except PIL.UnidentifiedImageError:
-                    with tempfile.NamedTemporaryFile() as tmpf:  # libjxl has problem with pipe yet
-                        f.seek(0)
-                        shutil.copyfileobj(f, tmpf)
-                        tmpf.flush()
-                        cmd = ['ffmpeg', '-i', tmpf.name, '-vf', 'scale=500:-1', str(saveto), '-y']
-                        # proc = await asyncio.create_subprocess_exec(*cmd, stderr=None if settings.debug else subprocess.DEVNULL)
-                        # if not (returncode := await proc.wait()) == 0:
-                        #     raise subprocess.CalledProcessError(returncode, cmd)
-                        subprocess.run(cmd, check=True, stderr=None if settings.debug else subprocess.DEVNULL)
+                convert_image(f, saveto, thumbnail=True)
         return saveto.relative_to(settings.thumb)
     else:
         raise NotImplementedError

@@ -22,9 +22,6 @@ Maybe multi-user?
 
 ## Plugin exception handling
 
-## Better JPEG XL support
-Server-side decode
-
 ## Other formats
 EPUB...
 

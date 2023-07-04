@@ -1,17 +1,19 @@
 from .scan import watch, scan
 from .config import settings
-from .utils import extract_thumbnail
+from .utils import extract_thumbnail, convert_image
 from typing import Union, Annotated
 from enum import Enum
 from pathlib import Path
 from zipfile import ZipFile
 import re
 import asyncio
+import tempfile
 from urllib.parse import quote, unquote, urlparse
 
 from fastapi import FastAPI, Cookie, Request, Query, Depends, BackgroundTasks, Response, status, Form
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
 
 from template import Template
 
@@ -22,8 +24,15 @@ from sqlalchemy import func, select, or_, update, delete
 from sqlalchemy.orm import Session
 Base.metadata.create_all(bind=engine)
 
+import tempfile
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global cache_dir
+    with tempfile.TemporaryDirectory() as cache_dir:
+        cache_dir = Path(cache_dir)
+        yield
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app_path = Path(__file__).parent
 app.mount("/css", StaticFiles(directory=app_path / "LANraragi/public/css"))
 app.mount("/img", StaticFiles(directory=app_path / "LANraragi/public/img"))
@@ -253,17 +262,30 @@ def extract_archive(id: str, force: bool, db: Session = Depends(get_db)):
 
 
 @app.get("/api/archives/{id}/page")
-def get_archive_page(id: str, path: str, db: Session = Depends(get_db)):
+def get_archive_page(request: Request, id: str, path: str, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
+    db.close()
     p = Path(settings.content) / a.path
     path = unquote(path)
+    UA = request.headers.get("user-agent", "")
+    if not re.search(settings.UA_convert_all, UA) is None or (path.endswith('.jxl') and not re.search(settings.UA_convert_jxl, UA) is None):
+        saveto = (cache_dir / a.path / path).with_suffix('.webp')
+        if not saveto.exists():
+            saveto.parent.mkdir(parents=True, exist_ok=True)
+            if p.is_dir():
+                convert_image(p / path, saveto)
+            elif p.suffix == '.zip':
+                with ZipFile(p) as z, z.open(path) as f:
+                    convert_image(f, saveto)
+            else:
+                raise NotImplementedError
+        return FileResponse(saveto)
     if p.suffix == '.zip':
         def iterfile():
-            with ZipFile(p) as z:
-                with z.open(path) as f:
-                    yield from f
+            with ZipFile(p) as z, z.open(path) as f:
+                yield from f
         return StreamingResponse(iterfile())
     else:
         return FileResponse(p / path)
