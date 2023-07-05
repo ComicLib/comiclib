@@ -72,31 +72,13 @@ class OrderingDirection(str, Enum):
 
 def do_search(db: Session, category: str, filters: str, order: Union[OrderingDirection, None] = None, sortby: str = "title", count: Union[int, None] = None, start: Union[int, None] = None, query_total: bool = False):
     if query_total:
-        stmt = select(func.count()).select_from(
-            Archive).outerjoin(Archive.tags).distinct(Archive.id)
-        if category:
-            stmt = stmt.outerjoin(Archive.categories).where(
-                Category.id == category)
-        recordsTotal = db.scalar(stmt)
+        recordsTotal = db.scalar(select(func.count(Archive.id.distinct())).select_from(Archive))
     else:
         recordsTotal = None
 
     stmt = select(Archive).outerjoin(Archive.tags).distinct(Archive.id)
-    if order is None:
-        stmt = stmt.order_by(func.random())
-    else:
-        if sortby == "title":
-            stmt = stmt.order_by(getattr(Archive.title, order.value)())
-        else:
-            stmt = stmt.where(Tag.tag.like(sortby+':%')
-                              ).order_by(getattr(Tag.tag, order.value)())
     if category:
-        stmt = stmt.outerjoin(Archive.categories).where(
-            Category.id == category)
-    if not count is None:
-        stmt = stmt.limit(count)
-    if not start is None:
-        stmt = stmt.offset(start)
+        stmt = stmt.outerjoin(Archive.categories).where(Category.id == category)
     for f in filter(None, map(str.strip, filters.split(','))):
         if f[0] == '"' and f[-1] == '"':
             f = f.strip('"')
@@ -107,23 +89,39 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
         f.replace('*', '%').replace('?', '_')
         stmt = stmt.where(or_(Archive.title.like(
             f), Archive.subtitle.like(f), Tag.tag.like(f)))
+    if order is None:
+        stmt = stmt.order_by(func.random())
+    else:
+        if sortby == "title":
+            stmt = stmt.order_by(getattr(Archive.title, order.value)())
+        else:
+            stmt = stmt.where(Tag.tag.like(sortby+':%')
+                              ).order_by(getattr(Tag.tag, order.value)())
+    if query_total:
+        recordsFiltered = db.scalar(stmt.with_only_columns(func.count(Archive.id.distinct())))
+    else:
+        recordsFiltered = None
+    if not count is None:
+        stmt = stmt.limit(count)
+    if not start is None:
+        stmt = stmt.offset(start)
     return [
         {"arcid": a.id, "isnew": "none", "extension": Path(
             a.path).suffix, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": a.title}
         for a in db.scalars(stmt)
-    ], recordsTotal
+    ], recordsFiltered, recordsTotal
 
 
 @app.get("/api/search")
 def search_archive(category: str, filter: str, start: int, order: OrderingDirection, sortby: str = "title", db: Session = Depends(get_db)):
-    data, recordsTotal = do_search(db, category=category, filters=filter,
+    data, recordsFiltered, recordsTotal = do_search(db, category=category, filters=filter,
                                    start=start, order=order, sortby=sortby, query_total=True)
-    return {"data": data, "draw": 0, "recordsFiltered": len(data), "recordsTotal": recordsTotal}
+    return {"data": data, "draw": 0, "recordsFiltered": recordsFiltered, "recordsTotal": recordsTotal}
 
 
 @app.get("/api/search/random")
 def get_random_archives(category: str, filter: str, count: int = 5, db: Session = Depends(get_db)):
-    data, _ = do_search(db, category=category,
+    data, _, _ = do_search(db, category=category,
                         filters=filter, order=None, count=count)
     return {"data": data}
 
@@ -147,9 +145,9 @@ def handle_datatables(request: Request, draw: int, start: int, length: int, filt
         elif request.query_params[m[0]] == "untagged":
             untaggedfilter = request.query_params["columns[$i][search][value]"] == "true"
 
-    data, recordsTotal = do_search(db, category=categoryfilter, filters=filters, order=sortorder,
+    data, recordsFiltered, recordsTotal = do_search(db, category=categoryfilter, filters=filters, order=sortorder,
                                    sortby=request.query_params[f"columns[{sortindex}][name]"], query_total=True, count=length, start=start)
-    return {"data": data, "draw": draw, "recordsFiltered": len(data), "recordsTotal": recordsTotal}
+    return {"data": data, "draw": draw, "recordsFiltered": recordsFiltered, "recordsTotal": recordsTotal}
 
 
 # Archive API
