@@ -1,5 +1,3 @@
-## Dynamic categories
-
 ## i18n
 Front-end and back-end
 

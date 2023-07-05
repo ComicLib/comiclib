@@ -39,7 +39,7 @@ Category.addNewCategory = function (isDynamic) {
     }).then((result) => {
         if (result.isConfirmed) {
             // Initialize dynamic collections with a bogus search
-            const searchtag = isDynamic ? "language:english" : "";
+            const searchtag = isDynamic ? "language:chinese" : "";
 
             // Make an API request to create category, search is empty -> static, otherwise dynamic
             Server.callAPI(`/api/categories?name=${result.value}&search=${searchtag}`, "PUT", `Category "${result.value}" created!`, "Error creating category:",

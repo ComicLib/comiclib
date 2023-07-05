@@ -82,9 +82,12 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
     else:
         recordsTotal = None
 
-    stmt = select(Archive).outerjoin(Archive.tags).distinct(Archive.id)
+    stmt = select(Archive).distinct(Archive.id)
     if category:
-        stmt = stmt.outerjoin(Archive.categories).where(Category.id == category)
+        if (search := db.get(Category, category).search) is None:
+            stmt = stmt.outerjoin(Archive.categories).where(Category.id == category)
+        else:
+            filters += ', ' + search
     for f in filter(None, map(str.strip, filters.split(','))):
         if f[0] == '"' and f[-1] == '"':
             f = f.strip('"')
@@ -93,15 +96,14 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
         else:
             f = f'%{f}%'
         f.replace('*', '%').replace('?', '_')
-        stmt = stmt.where(or_(Archive.title.like(
-            f), Archive.subtitle.like(f), Tag.tag.like(f)))
+        stmt = stmt.where(or_(Archive.title.like(f), Archive.subtitle.like(f), Archive.id.in_(select(Archive.id).outerjoin(Archive.tags).where(Tag.tag.like(f)))))
     if order is None:
         stmt = stmt.order_by(func.random())
     else:
         if sortby == "title":
             stmt = stmt.order_by(getattr(Archive.title, order.value)())
         else:
-            stmt = stmt.where(Tag.tag.like(sortby+':%')
+            stmt = stmt.outerjoin(Archive.tags).where(Tag.tag.like(sortby+':%')
                               ).order_by(getattr(Tag.tag, order.value)())
     if query_total:
         recordsFiltered = db.scalar(stmt.with_only_columns(func.count(Archive.id.distinct())))
@@ -393,7 +395,7 @@ def create_category(name: str, pinned: bool = False, search: Union[str, None] = 
     db.add(c)
     db.commit()
     return {
-        "category_id": c.id,
+        "category_id": str(c.id),
         "operation": "create_category",
         "success": 1
     }
