@@ -174,7 +174,7 @@ def get_archive_metadata(id: str, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "metadata", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    return {"arcid": a.id, "isnew": "false", "pagecount": a.pagecount, "progress": 0, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": a.title}
+    return {"arcid": a.id, "isnew": "false", "pagecount": a.pagecount, "progress": 1, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": a.title}
 
 
 @app.put("/api/archives/{id}/metadata")

@@ -28,6 +28,9 @@
       decode(el, false, true);
     else if (el instanceof Element && getComputedStyle(el).backgroundImage.endsWith('.jxl")'))
       decode(el, true, false);
+    else
+      return;
+    el.dispatchEvent(new Event('load'));
   }
 
   function imgDataToDataURL(img, imgData, isCSS, isSource) {
@@ -57,7 +60,6 @@
   }
 
   async function decode(img, isCSS, isSource) {
-    img.dispatchEvent(new Event('load'));
     const jxlSrc = img.dataset.jxlSrc = isCSS ? getComputedStyle(img).backgroundImage.slice(5, -2) : isSource ? img.srcset : img.currentSrc;
     if (!isCSS && !isSource) {
       img.srcset = '';

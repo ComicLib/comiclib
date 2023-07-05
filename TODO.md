@@ -27,4 +27,3 @@ EPUB...
 
 ## Other front-end
 - e-hentai, with ehunter and EhSyringe support
-- mobile
