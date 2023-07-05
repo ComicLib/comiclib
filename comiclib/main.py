@@ -40,6 +40,12 @@ app.mount("/js", StaticFiles(directory=app_path / "LANraragi/public/js"))
 app.mount("/themes", StaticFiles(directory=app_path / "LANraragi/public/themes"))
 
 @app.middleware("http")
+async def authentication(request: Request, call_next):
+    if not settings.password is None and request.method != "GET" and request.url.path != "/login" and request.cookies.get("tokenv0") != settings.password:
+        return Response("Not authenticated", status_code=status.HTTP_401_UNAUTHORIZED)
+    return await call_next(request)
+
+@app.middleware("http")
 async def add_COEPCOOP(request: Request, call_next):
     response = await call_next(request)
     if request.url.path == '/reader' or (request.headers.get("referer") and urlparse(request.headers["referer"]).path == '/reader'):
@@ -529,14 +535,24 @@ def read_root():
 
 
 @app.post("/login")
-def login(password: str):
-    return
+def login(password: str = Form()):
+    if settings.password == password:
+        response = RedirectResponse('index', status_code=status.HTTP_303_SEE_OTHER)
+        response.set_cookie(key="tokenv0", value=password)
+        return response
+    else:
+        return HTMLResponse(Template({"INCLUDE_PATH": str(app_path / "LANraragi/templates")}).process("login", {"csshead": csshead(), "wrongpass": True}))
 
+@app.get("/logout")
+def logout():
+    response = RedirectResponse('index', status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie("tokenv0")
+    return response 
 
 @app.get("/{path}", response_class=HTMLResponse)
 @app.get("/config/{path}", response_class=HTMLResponse)
-def read_template(request: Request, path: str, id: Union[str, None] = None, csshead: str = Depends(csshead), db: Session = Depends(get_db)):
-    vars = {"csshead": csshead, "id": id, "userlogged": True}
+def read_template(request: Request, path: str, id: Union[str, None] = None, csshead: str = Depends(csshead), db: Session = Depends(get_db), tokenv0: Union[str, None] = Cookie(default=None)):
+    vars = {"csshead": csshead, "id": id, "userlogged": settings.password is None or tokenv0 == settings.password, "needlog": not settings.password is None}
     if path in ("index", "reader"):
         vars["categories"] = [{"id": c.id, "name": c.name} for c in db.scalars(select(Category).where(Category.search.is_(None)))]
     if path == "categories":

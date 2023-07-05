@@ -1,4 +1,5 @@
 from pydantic import BaseSettings
+from typing import Union
 import re
 
 class Settings(BaseSettings):
@@ -8,6 +9,7 @@ class Settings(BaseSettings):
     thumb: str = './thumb'
     UA_convert_jxl: str = 'Android'
     UA_convert_all: str = r'\b\B'  # default: match nothing
+    password: Union[str, None] = None
 
 settings = Settings()
 

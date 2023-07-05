@@ -65,6 +65,10 @@
 		<a href="./stats">Statistics</a>
 		<!-- <i class="fa fa-caret-right"></i>
 		<a href="./logs">Logs</a> -->
+		[% IF needlog %]
+		<i class="fa fa-caret-right"></i>
+		<a href="./logout">Logout</a>
+		[% END %]
 	</p>
 	[% ELSE %]
 	<p id="nb">

@@ -17,9 +17,6 @@ Which date?
 - last modified time of the file
 - scan
 
-## login
-Maybe multi-user?
-
 ## Plugin exception handling
 
 ## Other formats
