@@ -39,16 +39,19 @@ async def scan(paths):
                 a = old_a
                 archive_id = old_a.id
             metadata = {"title": a.title, "subtitle": a.subtitle, "source": a.source, "pagecount": a.pagecount, "tags": set(
-                t.tag for t in a.tags), "categories": set(c.name for c in a.categories)}
+                t.tag for t in a.tags if not t.tag.startswith("date_added:")), "categories": set(c.name for c in a.categories)}
+            real_path = Path(settings.content) / p
             prev_scaners = []
             for scaner, name in scaners:
                 prev_metadata = copy.deepcopy(metadata)
-                if await scaner.scan(Path(settings.content) / p, archive_id, metadata, prev_scaners):
+                if await scaner.scan(real_path, archive_id, metadata, prev_scaners):
                     prev_scaners.append(name)
                 else:
                     metadata = prev_metadata
             if not prev_scaners:
                 continue
+            if not any(tag.startswith("date_added:") for tag in metadata["tags"]):
+                metadata["tags"].add(f"date_added:{int(real_path.stat().st_mtime)}")
             pprint(metadata)
             a.title = metadata["title"]
             a.subtitle = metadata["subtitle"]

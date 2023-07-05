@@ -8,13 +8,6 @@ Front-end and back-end
 
 ## Better SQL
 
-## namespace `dateadded`
-Which date?
-- upload to e-hentai
-- download
-- last modified time of the file
-- scan
-
 ## Plugin exception handling
 
 ## Other formats

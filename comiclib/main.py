@@ -28,6 +28,8 @@ import tempfile
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global cache_dir
+    asyncio.create_task(scan(Path(settings.content).rglob('*')))
+    asyncio.create_task(watch())
     with tempfile.TemporaryDirectory() as cache_dir:
         cache_dir = Path(cache_dir)
         yield
@@ -52,11 +54,6 @@ async def add_COEPCOOP(request: Request, call_next):
         response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
         response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
     return response
-
-@app.on_event('startup')
-async def app_startup():
-    asyncio.create_task(scan(Path(settings.content).rglob('*')))
-    asyncio.create_task(watch())
 
 
 def get_db():
