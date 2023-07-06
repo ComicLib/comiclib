@@ -8,12 +8,12 @@ from zipfile import ZipFile
 import re
 import asyncio
 import tempfile
+import multiprocessing
 from urllib.parse import quote, unquote, urlparse
 
 from fastapi import FastAPI, Cookie, Request, Query, Depends, BackgroundTasks, Response, status, Form
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from contextlib import asynccontextmanager
 
 from template import Template
 
@@ -25,16 +25,13 @@ from sqlalchemy.orm import Session
 Base.metadata.create_all(bind=engine)
 
 import tempfile
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    global cache_dir
-    scannow()
-    asyncio.create_task(watch())
-    with tempfile.TemporaryDirectory() as cache_dir:
-        cache_dir = Path(cache_dir)
-        yield
+with tempfile.TemporaryDirectory() as cache_dir:
+    cache_dir = Path(cache_dir)
+scannow()
+multiprocessing.Process(target=watch).start()
 
-app = FastAPI(lifespan=lifespan)
+
+app = FastAPI()
 app_path = Path(__file__).parent
 app.mount("/css", StaticFiles(directory=app_path / "LANraragi/public/css"))
 app.mount("/img", StaticFiles(directory=app_path / "LANraragi/public/img"))

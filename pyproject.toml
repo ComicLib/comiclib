@@ -30,7 +30,7 @@ dependencies = [
 [project.optional-dependencies]
 full = [
     "uvicorn[standard]",
-    'tld',
+    'gunicorn',
     'charset_normalizer'
 ]
 

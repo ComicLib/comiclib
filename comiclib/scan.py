@@ -2,7 +2,7 @@ import importlib
 import sys
 import copy
 import hashlib
-import asyncio
+import time
 from pathlib import Path
 from pprint import pprint
 
@@ -78,14 +78,14 @@ def scan(paths):
             db.commit()
 
 
-async def watch():
+def watch():
     file_sizes = {}
-    async for changes in watchfiles.awatch(settings.content, watch_filter=lambda change, _: change == watchfiles.Change.added, step=1000):
+    for changes in watchfiles.watch(settings.content, watch_filter=lambda change, _: change == watchfiles.Change.added, step=1000):
         for _, fname in changes:
             while file_sizes.get(fname, -1) != (fsize := Path(fname).stat().st_size):
                 file_sizes[fname] = fsize
-                await asyncio.sleep(1)
-        asyncio.to_thread(scan, map(lambda change: change[1], changes))
+                time.sleep(1)
+        scan(map(lambda change: change[1], changes))
 
 
 def scannow():
