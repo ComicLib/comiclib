@@ -6,7 +6,7 @@ from zipfile import ZipFile
 class Scaner:
     '''Handle regular zip files, with the filename as the title.'''
     
-    async def scan(self, path: Path, id: str, metadata: dict, prev_scaners: list[str]) -> bool:
+    def scan(self, path: Path, id: str, metadata: dict, prev_scaners: list[str]) -> bool:
         if path.match('**/*.zip') and not path.is_dir():
             print(f' -> zip.py get {path}')
             metadata["title"] = path.stem

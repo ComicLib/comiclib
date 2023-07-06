@@ -1,6 +1,11 @@
 from pathlib import Path
 import sqlite3, re
 from datetime import date
+from pydantic import BaseSettings
+
+class Settings(BaseSettings):
+    importEHdb_thumb: bool = True
+settings = Settings()
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
@@ -17,7 +22,7 @@ Currently only support matching by the source URL (from previous scaners).'''
         else:
             self.con = None
     
-    async def scan(self, id: str, path: Path, metadata: dict, prev_scaners: list[str]) -> bool:
+    def scan(self, id: str, path: Path, metadata: dict, prev_scaners: list[str]) -> bool:
         if self.con is None:
             return False
         elif metadata["source"] is None:
@@ -28,7 +33,9 @@ Currently only support matching by the source URL (from previous scaners).'''
             if res is None: return False
             metadata["title"] = res.pop("title")
             metadata["subtitle"] = res.pop("title_jpn")
-            metadata["thumb"] = res.pop("thumb")
+            thumb = res.pop("thumb")
+            if settings.importEHdb_thumb:
+                metadata["thumb"] = thumb
             metadata["categories"] = set((res.pop("category"),))
             metadata["tags"] = set()
             metadata["tags"].add(f"date_posted:{date.fromtimestamp(res.pop('posted'))}")

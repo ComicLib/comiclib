@@ -1,4 +1,4 @@
-from .scan import watch, scan
+from .scan import watch, scannow
 from .config import settings
 from .utils import extract_thumbnail, convert_image
 from typing import Union, Annotated
@@ -28,7 +28,7 @@ import tempfile
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global cache_dir
-    asyncio.create_task(scan(Path(settings.content).rglob('*')))
+    scannow()
     asyncio.create_task(watch())
     with tempfile.TemporaryDirectory() as cache_dir:
         cache_dir = Path(cache_dir)

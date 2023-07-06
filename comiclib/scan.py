@@ -1,4 +1,5 @@
 import importlib
+import sys
 import copy
 import hashlib
 import asyncio
@@ -14,14 +15,16 @@ from .config import settings
 
 Base.metadata.create_all(bind=engine)
 
-scaners = []
-for p in sorted((Path(__file__).parent / 'scaner').glob('*.py')):
-    print("Loading scaner", p.name)
-    scaners.append((importlib.import_module('.scaner.'+p.stem,
-                   __package__).Scaner(), p.stem))  # TODO: foo.bar.py
+from . import scaner
+
+sys.path.append('.')
+scaners = [(importlib.import_module('.scaner.'+name, __package__).Scaner(), name) for name in scaner.__all__] + \
+          [(importlib.import_module(p.stem).Scaner(), p.stem) for p in Path('.').glob('*.py')]
+scaners.sort(key=lambda t:t[1])
+print("Loaded scaners:", [scaner[1] for scaner in scaners])
 
 
-async def scan(paths):
+def scan(paths):
     with Session(engine) as db:
         for p in paths:  # TODO: https://github.com/python/cpython/issues/77609
             p = Path(p).resolve().relative_to(Path(settings.content).resolve())
@@ -44,7 +47,7 @@ async def scan(paths):
             prev_scaners = []
             for scaner, name in scaners:
                 prev_metadata = copy.deepcopy(metadata)
-                if await scaner.scan(real_path, archive_id, metadata, prev_scaners):
+                if scaner.scan(real_path, archive_id, metadata, prev_scaners):
                     prev_scaners.append(name)
                 else:
                     metadata = prev_metadata
@@ -82,8 +85,8 @@ async def watch():
             while file_sizes.get(fname, -1) != (fsize := Path(fname).stat().st_size):
                 file_sizes[fname] = fsize
                 await asyncio.sleep(1)
-        await scan(map(lambda change: change[1], changes))
+        asyncio.to_thread(scan, map(lambda change: change[1], changes))
 
 
 def scannow():
-    asyncio.run(scan(Path(settings.content).rglob('*')))
+    scan(Path(settings.content).rglob('*'))
