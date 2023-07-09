@@ -41,7 +41,9 @@ app.mount("/themes", StaticFiles(directory=app_path / "LANraragi/public/themes")
 
 @app.middleware("http")
 async def authentication(request: Request, call_next):
-    if not settings.password is None and request.method != "GET" and request.url.path != "/login" and request.cookies.get("tokenv0") != settings.password:
+    if not settings.password is None and request.method not in ("GET", "HEAD") and request.url.path != "/login" and request.cookies.get("tokenv0") != settings.password:
+        if request.url.path.endswith('/isnew') or '/progress/' in request.url.path:  # temporary solution
+            return JSONResponse({"success": 1})
         return Response("Not authenticated", status_code=status.HTTP_401_UNAUTHORIZED)
     return await call_next(request)
 
