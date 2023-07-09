@@ -13,7 +13,7 @@ class Scaner:
     '''For https://github.com/ccloli/E-Hentai-Downloader'''
     
     def scan(self, path: Path, id: str, metadata: dict, prev_scaners: list[str]) -> bool:
-        if not '1-zip' in prev_scaners:
+        if not '10-zip' in prev_scaners:
             return False
         with ZipFile(path) as z:
             if "info.txt" in z.namelist():

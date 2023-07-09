@@ -28,7 +28,8 @@ import tempfile
 with tempfile.TemporaryDirectory() as cache_dir:
     cache_dir = Path(cache_dir)
 scannow()
-multiprocessing.Process(target=watch).start()
+if settings.watch:
+    multiprocessing.Process(target=watch, daemon=True).start()
 
 
 app = FastAPI()

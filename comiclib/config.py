@@ -4,12 +4,13 @@ import re
 
 class Settings(BaseSettings):
     debug: bool = False
-    skip_exits: bool = True
     content: str = '.'
     thumb: str = './thumb'
+    password: Union[str, None] = None
+    skip_exits: bool = True
+    watch: bool = True
     UA_convert_jxl: str = 'Android'
     UA_convert_all: str = r'\b\B'  # default: match nothing
-    password: Union[str, None] = None
 
 settings = Settings()
 

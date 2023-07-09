@@ -10,6 +10,11 @@ from .database import engine, Base, Archive, Tag, Category
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 import watchfiles
+try:
+    import psutil
+    _check_inuse = True
+except ModuleNotFoundError:
+    _check_inuse = False
 
 from .config import settings
 
@@ -77,15 +82,31 @@ def scan(paths):
                 db.add(a)
             db.commit()
 
+def get_files_inuse():
+    ret = set()
+    for proc in psutil.process_iter():
+        try:
+            ret |= {f.path for f in proc.open_files()}
+        except (psutil.AccessDenied, psutil.NoSuchProcess):
+            pass
+    return ret
 
 def watch():
     file_sizes = {}
-    for changes in watchfiles.watch(settings.content, watch_filter=lambda change, _: change == watchfiles.Change.added, step=1000):
+    for changes in watchfiles.watch(settings.content, watch_filter=lambda change, _: change in (watchfiles.Change.added, watchfiles.Change.modified)):
         for _, fname in changes:
-            while file_sizes.get(fname, -1) != (fsize := Path(fname).stat().st_size):
-                file_sizes[fname] = fsize
-                time.sleep(1)
-        scan(map(lambda change: change[1], changes))
+            try:
+                if _check_inuse:
+                    if fname not in get_files_inuse():
+                        scan([fname])
+                else:
+                    while file_sizes.get(fname, -1) != (fsize := Path(fname).stat().st_size):
+                        file_sizes[fname] = fsize
+                        time.sleep(1)
+                    scan([fname])
+            except Exception as err:
+                if settings.debug:
+                    print(err)
 
 
 def scannow():
