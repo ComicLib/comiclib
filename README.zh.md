@@ -11,6 +11,7 @@
 - 🔌 支持插件
 - 🖼️ 支持JPEG XL
 - 💻 与LANraragi兼容的API（目前使用LANraragi的前端）
+- 📜 卷轴式/书本式阅读器（[eHunter](https://github.com/hanFengSan/eHunter)）
 
 # 🚀 安装
 确保你安装了 🐍 Python ⩾ 3.9，并通过如下命令安装 📚 ComicLib

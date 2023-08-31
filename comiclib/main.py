@@ -37,6 +37,7 @@ app_path = Path(__file__).parent
 app.mount("/css", StaticFiles(directory=app_path / "LANraragi/public/css"))
 app.mount("/img", StaticFiles(directory=app_path / "LANraragi/public/img"))
 app.mount("/js", StaticFiles(directory=app_path / "LANraragi/public/js"))
+app.mount("/eHunter", StaticFiles(directory=app_path / "eHunter"))
 app.mount("/themes", StaticFiles(directory=app_path / "LANraragi/public/themes"))
 
 @app.middleware("http")

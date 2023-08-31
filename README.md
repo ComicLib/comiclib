@@ -11,6 +11,7 @@ English | [中文](https://github.com/comiclib/comiclib/blob/master/README.zh.md
 - 🔌 Support plugins
 - 🖼️ Support JPEG XL
 - 💻 LANraragi-compatible API (currently using LANraragi's front-end)
+- 📜 scroll / book mode reader ([eHunter](https://github.com/hanFengSan/eHunter))
 
 # 🚀 Installation
 Make sure you have 🐍 Python ⩾ 3.9 installed, and install 📚 ComicLib with the following command

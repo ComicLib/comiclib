@@ -36,6 +36,8 @@
             Reader.initializeAll();
         })
     </script>
+    <link rel="stylesheet" type="text/css" href="eHunter/style.css" />
+    <script type="module" src="eHunter/ehunter.mjs"></script>
 </head>
 
 <body>
