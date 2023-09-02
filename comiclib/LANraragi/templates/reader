@@ -29,6 +29,7 @@
     <script src="./js/reader.js?[% version %]" type="text/javascript"></script>
 
 	<script src="/js/jxl.js" type="text/JAVASCRIPT"></script>
+	<script src="/js/translation.js?[% version %]" async></script>
 
     <script type="module">
         import('./js/vendor/fscreen.esm.js').then( r => {

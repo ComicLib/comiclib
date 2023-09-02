@@ -552,18 +552,37 @@ Index.loadTagSuggestions = function () {
                     // Format tag objects from the API into a format awesomplete likes.
                     let label = tag.text;
                     if (tag.namespace !== "") label = `${tag.namespace}:${tag.text}`;
+                    if ((typeof tag_translation !== 'undefined') && (tag.namespace in tag_translation) && (tag.text in tag_translation[tag.namespace]["data"])) {
+                        let trans = `${tag_translation[tag.namespace]["frontMatters"]["name"]}:${tag_translation[tag.namespace]["data"][tag.text]["name"]}`;
+                        return { label, value: {weight: tag.weight, trans: trans}}
+                    }
 
-                    return { label, value: tag.weight };
+                    return { label, value: {weight: tag.weight} };
                 },
                 // Sort by weight
                 sort(a, b) {
-                    return b.value - a.value;
+                    return b.value.weight - a.value.weight;
                 },
                 filter(text, input) {
-                    return Awesomplete.FILTER_CONTAINS(text, input.match(/[^, -]*$/)[0]);
+                    let input_tag = input.match(/[^, -]*$/)[0];
+                    return Awesomplete.FILTER_CONTAINS(text, input_tag) || (text.value.hasOwnProperty('trans') && Awesomplete.FILTER_CONTAINS(text.value.trans, input_tag));
                 },
                 item(text, input) {
-                    return Awesomplete.ITEM(text, input.match(/[^, -]*$/)[0]);
+                    if (typeof tag_translation === 'undefined')
+                        return Awesomplete.ITEM(text, input.match(/[^, -]*$/)[0]);
+                    function add_mark(text) {
+                        return input.trim() === "" ? text : text.replace(RegExp(input.trim().replace(/[-\\^$*+?.()|[\]{}]/g, "\\$&"), "gi"), "<mark>$&</mark>");
+                    }
+                    let span_trans = document.createElement('span');
+                    span_trans.innerHTML = text.value.hasOwnProperty('trans') ? add_mark(text.value.trans) : "";
+                    let span_raw = document.createElement('span');
+                    span_raw.innerHTML = add_mark(text);
+                    let li = document.createElement('li');
+                    li.style.display = "flex";
+                    li.style.justifyContent = "space-between";
+                    li.appendChild(span_trans);
+                    li.appendChild(span_raw);
+                    return li;
                 },
                 replace(text) {
                     const before = this.input.value.match(/^.*(,|-)\s*-*|/)[0];

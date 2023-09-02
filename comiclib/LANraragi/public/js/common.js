@@ -123,6 +123,7 @@ LRR.colorCodeTags = function (tags) {
     tagsToEncode.sort().forEach((key) => {
         tagsByNamespace[key].forEach((tag) => {
             const encodedK = LRR.encodeHTML(key.toLowerCase());
+            tag = trans_tag(key, tag);
             const encodedVal = LRR.encodeHTML(key === "date_added" || key === "timestamp" ? LRR.convertTimestamp(tag) : tag);
             line += `<span class='${encodedK}-tag'>${encodedVal}</span>, `;
         });
@@ -180,7 +181,8 @@ LRR.buildTagsDiv = function (tags) {
 
     // Go through resolved namespaces and print tag divs
     Object.keys(tagsByNamespace).sort().forEach((key) => {
-        let ucKey = key.charAt(0).toUpperCase() + key.slice(1);
+        key_trans = trans_namespace(key);
+        let ucKey = key_trans.charAt(0).toUpperCase() + key_trans.slice(1);
         ucKey = LRR.encodeHTML(ucKey);
 
         const encodedK = LRR.encodeHTML(key.toLowerCase());
@@ -189,6 +191,8 @@ LRR.buildTagsDiv = function (tags) {
         tagsByNamespace[key].forEach((tag) => {
             const url = LRR.getTagSearchURL(key, tag);
             const searchTag = LRR.buildNamespacedTag(key, tag);
+
+            tag = trans_tag(key, tag);
 
             const tagText = LRR.encodeHTML(key === "date_added" || key === "timestamp" ? LRR.convertTimestamp(tag) : tag);
 

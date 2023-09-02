@@ -43,6 +43,7 @@
 	<script src="/js/server.js?[% version %]" type="text/JAVASCRIPT"></script>
 	<script src="/js/index_datatables.js?[% version %]" type="text/JAVASCRIPT"></script>
 
+	<script src="/js/translation.js?[% version %]" async></script>
 </head>
 
 <body>
