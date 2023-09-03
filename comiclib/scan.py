@@ -20,13 +20,13 @@ from .config import settings
 
 Base.metadata.create_all(bind=engine)
 
-from . import scaner
+from . import scanner
 
 sys.path.append('.')
-scaners = [(importlib.import_module('.scaner.'+name, __package__).Scaner(), name) for name in scaner.__all__] + \
-          [(importlib.import_module(p.stem).Scaner(), p.stem) for p in Path('.').glob('*.py')]
-scaners.sort(key=lambda t:t[1])
-print("Loaded scaners:", [scaner[1] for scaner in scaners])
+scanners = [(importlib.import_module('.scanner.'+name, __package__).Scanner(), name) for name in scanner.__all__] + \
+          [(importlib.import_module(p.stem).Scanner(), p.stem) for p in Path('.').glob('*.py')]
+scanners.sort(key=lambda t:t[1])
+print("Loaded scanners:", [scanner[1] for scanner in scanners])
 
 
 def scan(paths):
@@ -49,14 +49,14 @@ def scan(paths):
             metadata = {"title": a.title, "subtitle": a.subtitle, "source": a.source, "pagecount": a.pagecount, "tags": set(
                 t.tag for t in a.tags if not t.tag.startswith("date_added:")), "categories": set(c.name for c in a.categories)}
             real_path = Path(settings.content) / p
-            prev_scaners = []
-            for scaner, name in scaners:
+            prev_scanners = []
+            for scanner, name in scanners:
                 prev_metadata = copy.deepcopy(metadata)
-                if scaner.scan(real_path, archive_id, metadata, prev_scaners):
-                    prev_scaners.append(name)
+                if scanner.scan(real_path, archive_id, metadata, prev_scanners):
+                    prev_scanners.append(name)
                 else:
                     metadata = prev_metadata
-            if not prev_scaners:
+            if not prev_scanners:
                 continue
             if not any(tag.startswith("date_added:") for tag in metadata["tags"]):
                 metadata["tags"].add(f"date_added:{int(real_path.stat().st_mtime)}")

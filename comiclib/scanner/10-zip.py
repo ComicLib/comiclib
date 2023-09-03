@@ -3,10 +3,10 @@ from pathlib import Path
 from zipfile import ZipFile
 
 
-class Scaner:
+class Scanner:
     '''Handle regular zip files, with the filename as the title.'''
     
-    def scan(self, path: Path, id: str, metadata: dict, prev_scaners: list[str]) -> bool:
+    def scan(self, path: Path, id: str, metadata: dict, prev_scanners: list[str]) -> bool:
         if path.match('**/*.zip') and not path.is_dir():
             print(f' -> zip.py get {path}')
             metadata["title"] = path.stem

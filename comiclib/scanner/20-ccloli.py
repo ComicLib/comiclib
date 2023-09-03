@@ -9,11 +9,11 @@ try:
 except ModuleNotFoundError:
     decode = lambda s: s.decode()
 
-class Scaner:
+class Scanner:
     '''For https://github.com/ccloli/E-Hentai-Downloader'''
     
-    def scan(self, path: Path, id: str, metadata: dict, prev_scaners: list[str]) -> bool:
-        if not '10-zip' in prev_scaners:
+    def scan(self, path: Path, id: str, metadata: dict, prev_scanners: list[str]) -> bool:
+        if not '10-zip' in prev_scanners:
             return False
         with ZipFile(path) as z:
             if "info.txt" in z.namelist():

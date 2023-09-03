@@ -35,9 +35,9 @@ def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
     return {key: value for key, value in zip(fields, row)}
 
-class Scaner:
+class Scanner:
     '''Import the dumped e-hentai metadata database (you can download it from https://sukebei.nyaa.si/view/3914574).
-Currently only support matching by the source URL (from previous scaners).'''
+Currently only support matching by the source URL (from previous scanners).'''
     
     def __init__(self) -> None:
         if Path("api_dump.sqlite").exists():
@@ -77,10 +77,10 @@ Currently only support matching by the source URL (from previous scaners).'''
                 return gid
         return None
     
-    def scan(self, path: Path, id: str, metadata: dict, prev_scaners: list[str]) -> bool:
+    def scan(self, path: Path, id: str, metadata: dict, prev_scanners: list[str]) -> bool:
         if self.con is None:
             return False
-        elif prev_scaners and not (gid := self.get_gid(metadata)) is None:
+        elif prev_scanners and not (gid := self.get_gid(metadata)) is None:
             print(f' -> importEHdb get {path}')
             res = self.con.execute("SELECT title, title_jpn, category, posted, thumb, artist, `group`, parody, character, female, male, language, mixed, other, cosplayer, rest FROM gallery WHERE gid == ?", (gid,)).fetchone()
             if res is None: return False
