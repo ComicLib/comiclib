@@ -165,3 +165,5 @@ thumb
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+# external scanner
+/*.py
