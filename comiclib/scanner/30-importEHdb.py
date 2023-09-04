@@ -1,15 +1,8 @@
 from pathlib import Path
 from typing import Union
-import sqlite3, re
+import sqlite3, re, ast
 from datetime import date
 from pydantic import BaseSettings
-try:
-    import orjson as json
-except ModuleNotFoundError:
-    try:
-        import ujson as json
-    except ModuleNotFoundError:
-        import json
 
 class Settings(BaseSettings):
     importEHdb_thumb: bool = True
@@ -50,11 +43,9 @@ Currently only support matching by the source URL (from previous scanners).'''
                 self.db_title_torrent = {}
                 for torrents, gid in self.con.execute("SELECT torrents, gid FROM gallery"):
                     if torrents is None: continue
-                    try:
-                        for torrent in json.loads(torrents.replace("'", '"')):
-                            self.db_title_torrent[blur_title(Path(torrent['name']).stem)] = gid
-                    except json.decoder.JSONDecodeError as err:
-                        pass
+                    for torrent in ast.literal_eval(torrents):
+                        if torrent['name'] is None: continue
+                        self.db_title_torrent[blur_title(Path(torrent['name']).stem)] = gid
             self.con.row_factory = dict_factory
             print('Loaded.')
         else:
@@ -94,7 +85,7 @@ Currently only support matching by the source URL (from previous scanners).'''
             metadata["tags"].add(f"date_posted:{date.fromtimestamp(res.pop('posted'))}")
             for namespace in res:
                 if res[namespace] is None: continue
-                metadata["tags"] |= set(map(lambda v: namespace+':'+v.strip(" []'"), res[namespace].split(',')))
+                metadata["tags"] |= set(map(lambda v: namespace+':'+v, ast.literal_eval(res[namespace])))
             return True
         else:
             return False
