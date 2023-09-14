@@ -1,0 +1,23 @@
+name: Build Docs
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  build:
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install mkdocs-material
+          mkdocs build -f docs/en/mkdocs.yml
+          mkdocs build -f docs/zh/mkdocs.yml
+          cp docs/index.html site/
+      - uses: actions/upload-pages-artifact@v2
+        with:
+          path: site/
+      - uses: actions/deploy-pages@v2

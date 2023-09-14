@@ -10,7 +10,7 @@
 - 🏷️ 支持tag和分类元数据导入和管理（WIP）
 - 🔌 支持插件
 - 🖼️ 支持JPEG XL
-- 💻 与LANraragi兼容的API（目前使用LANraragi的前端）
+- 💻 与 [LANraragi](https://github.com/Difegue/LANraragi) 兼容的API
 - 📜 卷轴式/书本式阅读器（[eHunter](https://github.com/hanFengSan/eHunter)）
 - 🔁 标签翻译（[EhTagTranslation](https://github.com/EhTagTranslation/Database)）
 
@@ -43,7 +43,7 @@ uvicorn comiclib.main:app --host 0.0.0.0 --port 80
 ```
 其中`--host 0.0.0.0`指定绑定的IP（`0.0.0.0`可使局域网访问），`--port 80`指定了绑定的端口。
 
-📄 更多设置请查看文档（WIP）。
+📄 更多设置请查看[文档](https://ComicLib.github.io/comiclib/zh/)。
 
 # ⚠️ 警告
 

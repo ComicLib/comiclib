@@ -1,0 +1,49 @@
+site_name: 📚 ComicLib
+site_dir: '../../site/zh'
+theme:
+  name: material
+  language: zh
+  features:
+    - toc.integrate 
+    - content.code.copy
+    - content.code.annotate
+  palette: 
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7 
+        name: 切换为暗色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换为亮色模式
+extra:
+  alternate:
+    - name: English
+      link: ../en/ 
+      lang: en
+    - name: 汉语
+      link: ../zh/
+      lang: zh
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/UmjCbgGUFW
+repo_url: https://github.com/ComicLib/comiclib
+copyright: Copyright &copy; 2023 ComicLib
+markdown_extensions:
+  - tables
+  - def_list
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true 
+  - attr_list
+  - md_in_html

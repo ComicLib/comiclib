@@ -1,4 +1,4 @@
-<h1 align="center">📚 ComicLib</h1><p align="center">
+<h1 align="center">📚 ComicLib</h1>
 <p align="center"><sup>Manage, read and share your comic/manga library</sup></p>
 
 English | [中文](https://github.com/comiclib/comiclib/blob/master/README.zh.md)
@@ -10,7 +10,7 @@ English | [中文](https://github.com/comiclib/comiclib/blob/master/README.zh.md
 - 🏷️ Support tag and category metadata import and management (WIP)
 - 🔌 Support plugins
 - 🖼️ Support JPEG XL
-- 💻 LANraragi-compatible API (currently using LANraragi's front-end)
+- 💻 [LANraragi](https://github.com/Difegue/LANraragi)-compatible API
 - 📜 scroll / book mode reader ([eHunter](https://github.com/hanFengSan/eHunter))
 - 🔁 Tag translation ([EhTagTranslation](https://github.com/EhTagTranslation/Database))
 
@@ -43,7 +43,7 @@ uvicorn comiclib.main:app --host 0.0.0.0 --port 80
 ```
 where `--host 0.0.0.0` specifies the bound IP (`0.0.0.0` enables LAN access), and `--port 80` specifies the bound port.
 
-📄 Please see the documentation (WIP) for more settings.
+📄 Please see the [documentation](https://ComicLib.github.io/comiclib/en/) for more settings.
 
 # ⚠️ Warning
 
