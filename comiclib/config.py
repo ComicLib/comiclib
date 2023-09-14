@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     debug: bool = False
     content: str = '.'
     thumb: str = './thumb'
+    metadata: str = 'sqlite:///./comiclib_metadata.db'
     password: Union[str, None] = None
     skip_exits: bool = True
     watch: bool = True

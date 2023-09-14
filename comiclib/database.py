@@ -10,7 +10,7 @@ from .config import settings
 
 
 engine = create_engine(
-    "sqlite:///./comiclib_metadata.db", connect_args={"check_same_thread": False}, echo=settings.debug
+    settings.metadata, connect_args={"check_same_thread": False}, echo=settings.debug
 )
 
 
