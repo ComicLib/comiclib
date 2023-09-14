@@ -17,7 +17,7 @@ English | [中文](https://github.com/comiclib/comiclib/blob/master/README.zh.md
 # 🚀 Installation
 Make sure you have 🐍 Python ⩾ 3.9 installed, and install 📚 ComicLib with the following command
 ```
-pip install -U 'comiclib[full] @ git+https://github.com/comiclib/comiclib.git'
+pip install -U "comiclib[full]"
 ```
 Then run the following command in the location of your comic library to start
 ```

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "comiclib"
-version = "0.0.0"
+version = "0.0.1.dev1"
 authors = [
   { name="URenko" },
 ]
@@ -22,7 +22,7 @@ dependencies = [
     'python-multipart',
     'pillow',
     'Template-Toolkit-Python ; python_version < "3.10"',
-    'Template-Toolkit-Python@git+https://github.com/URenko/Template-Toolkit-Python.git ; python_version >= "3.10"',
+    'Template-Toolkit-Python-2 ; python_version >= "3.10"',
     'watchfiles',
     'requests'
 ]

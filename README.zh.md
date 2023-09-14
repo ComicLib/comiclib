@@ -17,7 +17,7 @@
 # 🚀 安装
 确保你安装了 🐍 Python ⩾ 3.9，并通过如下命令安装 📚 ComicLib
 ```
-pip install -U 'comiclib[full] @ git+https://github.com/comiclib/comiclib.git'
+pip install -U "comiclib[full]"
 ```
 然后在你的漫画库的位置运行通过如下命令启动
 ```
