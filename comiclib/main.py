@@ -504,7 +504,7 @@ def info():
     return {
         "name": "ComicLib",
         "motd": "Welcome to the library powered by ComicLib!",
-        "version": "0.0.1.dev1",
+        "version": "0.0.1.dev2",
         "version_name": "Kaosu",
         "version_desc": "Ababababa",
         "total_pages_read": "0",
