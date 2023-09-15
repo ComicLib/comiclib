@@ -256,7 +256,9 @@ def extract_archive(id: str, force: bool, db: Session = Depends(get_db)):
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
     path = Path(settings.content) / a.path
-    if path.suffix == '.zip':
+    if path.is_dir():
+        pages = [f"./api/archives/{id}/page?path="+quote(p.name, safe='') for p in sorted(path.iterdir()) if p.suffix != '.txt']
+    elif path.suffix == '.zip':
         with ZipFile(path) as z:
             pages = [f"./api/archives/{id}/page?path="+quote(z_info.filename, safe='') for z_info in filter(
                 lambda z_info: not z_info.is_dir(), z.infolist())]

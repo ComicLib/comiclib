@@ -22,6 +22,11 @@ Treat *.zip files as comic files.
 
 Parse comic files downloaded via [ccloli/E-Hentai-Downloader](https://github.com/ccloli/E-Hentai-Downloader).
 
+
+### 21-hath.py
+
+Parse comic folders downloaded via [Hentai@Home](https://ehwiki.org/wiki/Hentai@Home#H.40H_Downloader).
+
 ### 30-importEHdb.py
 
 Import the corresponding metadata from [ehentai metadata database](https://sukebei.nyaa.si/user/gipaf23445).

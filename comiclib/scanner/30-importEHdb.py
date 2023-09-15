@@ -86,6 +86,9 @@ Currently only support matching by the source URL (from previous scanners).'''
             for namespace in res:
                 if res[namespace] is None: continue
                 metadata["tags"] |= set(map(lambda v: namespace+':'+v, ast.literal_eval(res[namespace])))
+            if metadata["source"] is None or not re.fullmatch(r"https?://e[x-]hentai\.org/g/(\d+)/", metadata["source"]) is None:
+                token = self.con.execute("SELECT token FROM gallery WHERE gid == ?", (gid,)).fetchone()['token']
+                metadata["source"] = f"https://exhentai.org/g/{gid}/{token}/"
             return True
         else:
             return False
