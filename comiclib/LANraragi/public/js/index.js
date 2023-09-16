@@ -383,7 +383,7 @@ Index.updateTableHeaders = function () {
  * If so, flash another friendly notification inviting the user to check it out
  */
 Index.checkVersion = function () {
-    const githubAPI = "https://api.github.com/repos/difegue/lanraragi/releases/latest";
+    const githubAPI = "https://api.github.com/repos/ComicLib/comiclib/releases/latest";
 
     fetch(githubAPI)
         .then((response) => response.json())
@@ -431,7 +431,7 @@ Index.fetchChangelog = function () {
     if (localStorage.lrrVersion !== Index.serverVersion) {
         localStorage.lrrVersion = Index.serverVersion;
 
-        fetch("https://api.github.com/repos/difegue/lanraragi/releases/latest", { method: "GET" })
+        fetch("https://api.github.com/repos/ComicLib/comiclib/releases/latest", { method: "GET" })
             .then((response) => (response.ok ? response.json() : { error: "Response was not OK" }))
             .then((data) => {
                 if (data.error) throw new Error(data.error);
