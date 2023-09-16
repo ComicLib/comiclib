@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     importEHdb_matchtorrent: bool = True
 settings = Settings()
 
+import logging
+logger = logging.getLogger(__name__)
 
 def blur_title(title: str):
     if not isinstance(title, str):
@@ -34,7 +36,7 @@ Currently only support matching by the source URL (from previous scanners).'''
     
     def __init__(self) -> None:
         if Path("api_dump.sqlite").exists():
-            print('Loading ehentai metadata database, please wait...')
+            logger.info('Loading ehentai metadata database, please wait...')
             self.con = sqlite3.connect("api_dump.sqlite", check_same_thread=False)
             if settings.importEHdb_matchtitle:
                 self.db_title = {blur_title(row[0]): row[1] for row in self.con.execute("SELECT title, gid FROM gallery") if not row[0] is None}
@@ -47,7 +49,7 @@ Currently only support matching by the source URL (from previous scanners).'''
                         if torrent['name'] is None: continue
                         self.db_title_torrent[blur_title(Path(torrent['name']).stem)] = gid
             self.con.row_factory = dict_factory
-            print('Loaded.')
+            logger.info('Loaded.')
         else:
             self.con = None
     
@@ -72,7 +74,7 @@ Currently only support matching by the source URL (from previous scanners).'''
         if self.con is None:
             return False
         elif prev_scanners and not (gid := self.get_gid(metadata)) is None:
-            print(f' -> importEHdb get {path}')
+            logger.info(f' <- {path}')
             res = self.con.execute("SELECT title, title_jpn, category, posted, thumb, artist, `group`, parody, character, female, male, language, mixed, other, cosplayer, rest FROM gallery WHERE gid == ?", (gid,)).fetchone()
             if res is None: return False
             metadata["title"] = res.pop("title")

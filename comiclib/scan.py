@@ -4,7 +4,10 @@ import copy
 import hashlib
 import time
 from pathlib import Path
-from pprint import pprint
+from pprint import pformat
+
+import logging
+logger = logging.getLogger(__name__)
 
 from .database import engine, Base, Archive, Tag, Category
 from sqlalchemy import select
@@ -26,7 +29,7 @@ sys.path.append('.')
 scanners = [(importlib.import_module('.scanner.'+name, __package__).Scanner(), name) for name in scanner.__all__] + \
           [(importlib.import_module(p.stem).Scanner(), p.stem) for p in Path('.').glob('*.py')]
 scanners.sort(key=lambda t:t[1])
-print("Loaded scanners:", [scanner[1] for scanner in scanners])
+logger.info(f"Loaded scanners: {[scanner[1] for scanner in scanners]}")
 
 
 def scan(paths):
@@ -60,7 +63,7 @@ def scan(paths):
                 continue
             if not any(tag.startswith("date_added:") for tag in metadata["tags"]):
                 metadata["tags"].add(f"date_added:{int(real_path.stat().st_mtime)}")
-            pprint(metadata)
+            logging.debug(pformat(metadata))
             a.title = metadata["title"]
             a.subtitle = metadata["subtitle"]
             a.source = metadata["source"]
@@ -105,8 +108,7 @@ def watch():
                         time.sleep(1)
                     scan([fname])
             except Exception as err:
-                if settings.debug:
-                    print(err)
+                logger.error(err)
 
 
 def scannow():

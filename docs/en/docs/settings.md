@@ -27,6 +27,7 @@ The following is a list of available settings:
 | Environment variable | Description | Default value |
 | ------- | ---- | ----- |
 | `debug` | Turn on debug output (`True`/`False`) | `False` |
+| `loglevel` | Log level (`DEBUG`/`INFO`/`WARNING`/`ERROR`/`CRITICAL`). If `debug` is `True`, it will be overwritten to `DEBUG` | `INFO` |
 | `content` | The path where the comic file is stored (due to [a problem with Python](https://github.com/python/cpython/issues/77609), following symbolic links is not currently supported) | `.` |
 | `thumb` | The path where the generated thumbnails are stored | `./thumb`|
 | `metadata` | The URL for metadata database, refer to [SQLAlchemy documentation](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls) | `sqlite:///./comiclib_metadata.db` |

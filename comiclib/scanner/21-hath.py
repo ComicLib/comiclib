@@ -1,13 +1,15 @@
 from pathlib import Path
 import re
 
+import logging
+logger = logging.getLogger(__name__)
 
 class Scanner:
     '''For archives downloaded via Hentai@Home'''
     
     def scan(self, path: Path, id: str, metadata: dict, prev_scanners: list[str]) -> bool:
         if path.is_dir() and (path / 'galleryinfo.txt').exists():
-            print(f' -> hath.py get {path}')
+            logger.info(f' <- {path}')
             metadata["source"] = 'https://exhentai.org/g/' + re.search(r"\[(\d+)\]$", path.name)[1] + '/'
             information = (path / 'galleryinfo.txt').read_text().splitlines()
             _key, _, title = information[0].partition(':')

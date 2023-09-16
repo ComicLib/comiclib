@@ -2,6 +2,9 @@ import tarfile, io, shutil
 from pathlib import Path
 import requests
 
+import logging
+logger = logging.getLogger(__name__)
+
 dependencies = {
         '@fortawesome/fontawesome-free': '6.4.0',
         '@jcubic/tagger': '0.4.4',
@@ -73,11 +76,11 @@ vendor_woff = (
 vendor_version = 0
 version_file = Path(__file__).parent / 'LANraragi/public/version'
 if not version_file.exists() or int(version_file.read_text()) < vendor_version:
-    print('Installing/updating front-end files...')
+    logger.info('Installing/updating front-end files...')
 
     s = requests.session()
     for name in dependencies:
-        print('downloading', name)
+        logger.info('downloading', name)
         r = s.get(f"https://registry.npmjs.com/{name}/-/{name.rpartition('/')[-1]}-{dependencies[name]}.tgz", allow_redirects=True)
         r.raise_for_status()
         with tarfile.open(fileobj=io.BytesIO(r.content), mode='r:gz') as t:

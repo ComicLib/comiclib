@@ -27,6 +27,7 @@
 | 环境变量 | 说明 | 默认值 |
 | ------- | ---- | ----- |
 | `debug` | 开启调试输出（`True`/`False`） | `False` |
+| `loglevel` | 日志级别（`DEBUG`/`INFO`/`WARNING`/`ERROR`/`CRITICAL`），若`debug`为`True`，会被覆盖为`DEBUG` | `INFO` |
 | `content` | 漫画文件存放的路径（由于 [Python 的一个问题](https://github.com/python/cpython/issues/77609)，暂不支持跟随符号链接） | `.` |
 | `thumb` | 生成的缩略图存放的路径 | `./thumb`|
 | `metadata` | 元数据库 URL，参考[SQLAlchemy 文档](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls) | `sqlite:///./comiclib_metadata.db` |

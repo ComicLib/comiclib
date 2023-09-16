@@ -1,6 +1,8 @@
 from pathlib import Path
 from zipfile import ZipFile
 
+import logging
+logger = logging.getLogger(__name__)
 
 try:
     from charset_normalizer import from_bytes
@@ -24,7 +26,7 @@ class Scanner:
                 info = z_comments
             else:
                 return False
-            print(f' -> ccloli get {path}')
+            logger.info(f' <- {path}')
             if "hentai.org" not in info[2]: return False
             metadata["title"] = info[0]
             metadata["subtitle"] = info[1]
