@@ -44,6 +44,9 @@ comiclib
 ```
 它会自动扫描当前工作目录下的漫画，具体细节见[扫描脚本](scanner.md)。
 
+!!! tip "如果你使用 ehentai"
+    强烈建议先[从此](https://sukebei.nyaa.si/user/gipaf23445)下载 ehentai 元数据库 api_dump.sqlite 至工作目录，详见[扫描脚本的说明](scanner.md#30-importehdbpy)。
+
 !!! danger "不要随意更改工作目录"
     扫描得到的元数据默认存于工作目录，因此下次运行时也要在此目录。
     可以设置数据库为一绝对路径，这样就不用担心这一问题。

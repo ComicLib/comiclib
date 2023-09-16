@@ -31,7 +31,7 @@ def dict_factory(cursor, row):
     return {key: value for key, value in zip(fields, row)}
 
 class Scanner:
-    '''Import the dumped e-hentai metadata database (you can download it from https://sukebei.nyaa.si/view/3914574).
+    '''Import the dumped e-hentai metadata database api_dump.sqlite (you can download it from https://sukebei.nyaa.si/user/gipaf23445).
 Currently only support matching by the source URL (from previous scanners).'''
     
     def __init__(self) -> None:

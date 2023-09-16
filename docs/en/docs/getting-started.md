@@ -44,6 +44,9 @@ comiclib
 ```
 It will automatically scan comics in the current working directory. See [Scan Script](scanner.md) for details.
 
+!!! tip "If you use ehentai"
+    It is strongly recommended to download the ehentai metadata database api_dump.sqlite to the working directory [from here](https://sukebei.nyaa.si/user/gipaf23445) first. For details, see [Scanner](scanner.md#30-importehdbpy).
+
 !!! danger "Do not change the working directory arbitrarily"
     The metadata obtained by scanning is stored in the working directory by default, so it should be the same directory the next time.
     You can set the metadata database to an absolute path so you don't have to worry about this problem.
