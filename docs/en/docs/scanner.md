@@ -27,6 +27,10 @@ Parse comic files downloaded via [ccloli/E-Hentai-Downloader](https://github.com
 
 Parse comic folders downloaded via [Hentai@Home](https://ehwiki.org/wiki/Hentai@Home#H.40H_Downloader).
 
+### 22-ehviewer.py
+
+Parse comic folders downloaded via [EhViewer](https://github.com/seven332/EhViewer).
+
 ### 30-importEHdb.py
 
 Import the corresponding metadata from [ehentai metadata database](https://sukebei.nyaa.si/user/gipaf23445).

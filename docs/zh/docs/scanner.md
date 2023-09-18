@@ -26,6 +26,10 @@ ComicLib 的主体仅负责遍历漫画库，漫画文件的判断、解析等�
 
 解析通过 [Hentai@Home](https://ehwiki.org/wiki/Hentai@Home#H.40H_Downloader) 下载的漫画文件夹。
 
+### 22-ehviewer.py
+
+解析通过 [EhViewer](https://github.com/seven332/EhViewer) 下载的漫画文件夹。
+
 ### 30-importEHdb.py
 
 从 [ehentai 元数据库](https://sukebei.nyaa.si/user/gipaf23445)导入相应的元数据。

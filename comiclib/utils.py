@@ -40,7 +40,8 @@ def extract_thumbnail(path: Union[str, Path], id: str, page: int, cache=False) -
         return saveto.relative_to(settings.thumb)
     saveto.parent.mkdir(parents=True, exist_ok=True)
     if path.is_dir():
-        convert_image(sorted(filter(lambda p:p.suffix != '.txt', path.iterdir()))[page-1], saveto, thumbnail=True)
+        convert_image(sorted(filter(lambda p:p.suffix != '.txt' and not p.name.startswith('.'), path.iterdir()))[page-1], saveto, thumbnail=True)
+        return saveto.relative_to(settings.thumb)
     elif path.suffix == '.zip':
         with ZipFile(path) as z:
             with z.open(list(filter(lambda z_info: not z_info.is_dir(), z.infolist()))[page-1].filename) as f:
