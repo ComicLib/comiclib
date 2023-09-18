@@ -1,3 +1,6 @@
+__version__ = "0.0.1a2"
+print(f" >>> ComicLib v{__version__}")
+
 from .scan import watch, scannow
 from .config import settings
 from .utils import extract_thumbnail, convert_image
@@ -504,7 +507,7 @@ def info():
     return {
         "name": "ComicLib",
         "motd": "Welcome to the library powered by ComicLib!",
-        "version": "0.0.1a1",
+        "version": __version__,
         "version_name": "Kaosu",
         "version_desc": "Ababababa",
         "total_pages_read": "0",

@@ -87,7 +87,7 @@ Index.initializeAll = function () {
         localStorage.sawContextMenuToast = true;
 
         LRR.toast({
-            heading: `Welcome to LANraragi ${Index.serverVersion}!`,
+            heading: `Welcome to ComicLib ${Index.serverVersion}!`,
             text: "If you want to perform advanced operations on an archive, remember to just right-click its name. Happy reading!",
             icon: "info",
             hideAfter: 13000,

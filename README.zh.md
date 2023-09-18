@@ -6,9 +6,9 @@
 💬 加入讨论: [![Discord](https://img.shields.io/discord/1100655762411372604?logo=discord&style=flat-square)](https://discord.gg/UmjCbgGUFW)
 
 # ✨ 特点
-- 📁 支持多种存档格式（WIP）
-- 🏷️ 支持tag和分类元数据导入和管理（WIP）
-- 🔌 支持插件
+- 📁 支持多种存档格式
+- 🏷️ 支持tag和分类元数据导入和管理
+- 🔌 支持[插件](https://comiclib.github.io/comiclib/zh/scanner/)
 - 🖼️ 支持JPEG XL
 - 💻 与 [LANraragi](https://github.com/Difegue/LANraragi) 兼容的API
 - 📜 卷轴式/书本式阅读器（[eHunter](https://github.com/hanFengSan/eHunter)）
