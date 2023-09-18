@@ -90,12 +90,14 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
         else:
             filters += ', ' + search
     for f in filter(None, map(str.strip, filters.split(','))):
+        pre =  suff = '%'
+        if f[-1] == '$':
+            f = f[:-1]
+            suff = ''
         if f[0] == '"' and f[-1] == '"':
             f = f.strip('"')
-        elif f[-1] == '$':
-            f = f'%{f[:-1]}'
-        else:
-            f = f'%{f}%'
+            pre = suff = ''
+        f = pre + f + suff
         f.replace('*', '%').replace('?', '_')
         stmt = stmt.where(or_(Archive.title.like(f), Archive.subtitle.like(f), Archive.id.in_(select(Archive.id).outerjoin(Archive.tags).where(Tag.tag.like(f)))))
     if order is None:
@@ -122,7 +124,7 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
 
 
 @app.get("/api/search")
-def search_archive(category: str, filter: str, start: int, order: OrderingDirection, sortby: str = "title", db: Session = Depends(get_db)):
+def search_archive(filter: str, start: int, order: OrderingDirection, category: str = '', sortby: str = "title", db: Session = Depends(get_db)):
     data, recordsFiltered, recordsTotal = do_search(db, category=category, filters=filter,
                                    start=start, order=order, sortby=sortby, query_total=True)
     return {"data": data, "draw": 0, "recordsFiltered": recordsFiltered, "recordsTotal": recordsTotal}
@@ -254,7 +256,7 @@ def download_archive(id: str, db: Session = Depends(get_db)):
 
 
 @app.get("/api/archives/{id}/files")
-def extract_archive(id: str, force: bool, db: Session = Depends(get_db)):
+def extract_archive(id: str, force: bool = True, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
@@ -336,6 +338,10 @@ def delete_archive(id: str, db: Session = Depends(get_db)):
         "filename": str(p)
     }
 
+@app.post("/api/archives/{id}/extract")  # Deprecated but used by Ichaival
+def extract_archive(id: str):
+    return RedirectResponse(f'/api/archives/{id}/files', status_code=status.HTTP_303_SEE_OTHER)
+
 
 # Database API
 
@@ -392,8 +398,9 @@ def get_all_categories(db: Session = Depends(get_db)):
 
 
 @app.put("/api/categories")
-def create_category(name: str, pinned: bool = False, search: Union[str, None] = None, db: Session = Depends(get_db)):
-    if len(search) == 0: search = None
+def create_category(name: Annotated[str, Form()] = None, name2: Annotated[str, Query(alias="name")] = None, pinned: bool = False, search: Union[str, None] = None, db: Session = Depends(get_db)):
+    if name is None: name = name2
+    if not search is None and len(search) == 0: search = None
     c = Category(name=name, pinned=pinned, search=search)
     db.add(c)
     db.commit()
@@ -508,7 +515,7 @@ def info():
         "name": "ComicLib",
         "motd": "Welcome to the library powered by ComicLib!",
         "version": __version__,
-        "version_name": "Kaosu",
+        "version_name": "ComicLib",
         "version_desc": "Ababababa",
         "total_pages_read": "0",
         "has_password": "0",

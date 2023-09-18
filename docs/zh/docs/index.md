@@ -2,7 +2,7 @@
 <p align="center"><sup>管理、阅读、分享你的漫画库</sup></p>
 
 ## ✨ 特点
-- 📁 支持多种存档格式
+- 📁 支持[多种存档格式](supported-formats.md)
 - 🏷️ 支持 tag 和分类元数据导入和管理
 - 🔌 支持[插件](scanner.md)
 - 🖼️ 支持 JPEG XL

@@ -2,7 +2,7 @@
 <p align="center"><sup>Manage, read and share your comic/manga library</sup></p>
 
 ## ✨ Features
-- 📁 Support multiple archive formats
+- 📁 Support [multiple archive formats](supported-formats.md)
 - 🏷️ Support tag and category metadata import and management
 - 🔌 Support plugins
 - 🖼️ Support JPEG XL

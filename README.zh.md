@@ -6,7 +6,7 @@
 💬 加入讨论: [![Discord](https://img.shields.io/discord/1100655762411372604?logo=discord&style=flat-square)](https://discord.gg/UmjCbgGUFW)
 
 # ✨ 特点
-- 📁 支持多种存档格式
+- 📁 支持[多种存档格式](https://comiclib.github.io/comiclib/zh/supported-formats/)
 - 🏷️ 支持tag和分类元数据导入和管理
 - 🔌 支持[插件](https://comiclib.github.io/comiclib/zh/scanner/)
 - 🖼️ 支持JPEG XL

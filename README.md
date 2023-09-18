@@ -6,7 +6,7 @@ English | [中文](https://github.com/comiclib/comiclib/blob/master/README.zh.md
 💬 Join Discussion: [![Discord](https://img.shields.io/discord/1100655762411372604?logo=discord&style=flat-square)](https://discord.gg/UmjCbgGUFW)
 
 # ✨ Features
-- 📁 Support multiple archive formats
+- 📁 Support [multiple archive formats](https://comiclib.github.io/comiclib/en/supported-formats/)
 - 🏷️ Support tag and category metadata import and management
 - 🔌 Support [plugins](https://comiclib.github.io/comiclib/en/scanner/)
 - 🖼️ Support JPEG XL
