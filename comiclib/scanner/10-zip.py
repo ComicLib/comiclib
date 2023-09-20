@@ -12,6 +12,11 @@ class Scanner:
         if path.match('**/*.zip') and not path.is_dir():
             logger.info(f' <- {path}')
             metadata["title"] = path.stem
+            try:
+                ZipFile(path)
+            except:
+                logger.info(f' <- {path}: Bad zip archive')
+                return False
             with ZipFile(path) as z:
                 metadata["pagecount"] = len(
                     list(filter(lambda z_info: not z_info.is_dir(), z.infolist())))
