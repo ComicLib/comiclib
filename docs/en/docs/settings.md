@@ -31,7 +31,7 @@ The following is a list of available settings:
 | `content` | The path where the comic file is stored | `.` |
 | `thumb` | The path where the generated thumbnails are stored | `./thumb`|
 | `metadata` | The URL for metadata database, refer to [SQLAlchemy documentation](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls) | `sqlite:///./comiclib_metadata.db` |
-| `password` | Admin password. If it is `None`, any visitor will have editing permissions. This feature is designed to protect against gentlemen but not villains. If you need security protection, please use e.g. the HTTP basic authentication of the reverse proxy, Cloudflare Access or TLS client certificate, etc. | `None`|
+| `password` | Admin password (also used as API Key currently). If it is `None`, any visitor will have editing permissions. This feature is designed to protect against gentlemen but not villains. If you need security protection, please use e.g. the HTTP basic authentication of the reverse proxy, Cloudflare Access or TLS client certificate, etc. | `None`|
 | `skip_exists`| Skip comics that have been scanned into the metadata database during scanning? (`True`/`False`) | `True` |
 | `watch` | Monitor comic folders and automatically scan (`True`/`False`) | `True` |
 | `UA_convert_jxl` | For requests with matched user-agent, convert JPEG XL files to other popular formats on the server side. The value is a regular expression. | `Android` |

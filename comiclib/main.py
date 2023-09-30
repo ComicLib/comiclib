@@ -9,13 +9,14 @@ from enum import Enum
 from pathlib import Path
 from zipfile import ZipFile
 import re
-import asyncio
+import base64
 import tempfile
 import multiprocessing
 from urllib.parse import quote, unquote, urlparse
 
-from fastapi import FastAPI, Cookie, Request, Query, Depends, BackgroundTasks, Response, status, Form
+from fastapi import FastAPI, Cookie, Request, Query, Depends, BackgroundTasks, Response, status, Form, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, JSONResponse, RedirectResponse
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
 
 from template import Template
@@ -44,14 +45,6 @@ app.mount("/eHunter", StaticFiles(directory=app_path / "eHunter"))
 app.mount("/themes", StaticFiles(directory=app_path / "LANraragi/public/themes"))
 
 @app.middleware("http")
-async def authentication(request: Request, call_next):
-    if not settings.password is None and request.method not in ("GET", "HEAD") and request.url.path != "/login" and request.cookies.get("tokenv0") != settings.password:
-        if request.url.path.endswith('/isnew') or '/progress/' in request.url.path:  # temporary solution
-            return JSONResponse({"success": 1})
-        return Response("Not authenticated", status_code=status.HTTP_401_UNAUTHORIZED)
-    return await call_next(request)
-
-@app.middleware("http")
 async def add_COEPCOOP(request: Request, call_next):
     response = await call_next(request)
     if request.url.path == '/reader' or (request.headers.get("referer") and urlparse(request.headers["referer"]).path == '/reader'):
@@ -67,6 +60,18 @@ def get_db():
     finally:
         db.close()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+async def verify_token(request: Request):
+    if request.cookies.get("tokenv0") != settings.password and base64.b64decode((await oauth2_scheme(request)).encode()).decode() != settings.password:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+if settings.password is None:
+    authorization = None
+else:
+    authorization = [Depends(verify_token)]
 
 # https://sugoi.gitbook.io/lanraragi/v/dev/api-documentation/getting-started
 
@@ -137,7 +142,7 @@ def get_random_archives(category: str = '', filter: str = '', count: int = 5, db
     return {"data": data}
 
 
-@app.delete("/api/search/cache")
+@app.delete("/api/search/cache", dependencies=authorization)
 def discard_search_cache():
     return {"operation": "clear_cache", "success": 1}
 
@@ -186,7 +191,7 @@ def get_archive_metadata(id: str, db: Session = Depends(get_db)):
     return {"arcid": a.id, "isnew": "false", "pagecount": a.pagecount, "progress": 1, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": a.title}
 
 
-@app.put("/api/archives/{id}/metadata")
+@app.put("/api/archives/{id}/metadata", dependencies=authorization)
 def update_archive_metadata(id: str, title: Annotated[str, Form()], tags: Annotated[str, Form()], db: Session = Depends(get_db)):
     db.execute(update(Archive).where(Archive.id == id).values(title=title))
     db.execute(delete(Tag).where(Tag.archive_id == id))
@@ -232,7 +237,7 @@ def get_archive_thumbnail(id: str, background_tasks: BackgroundTasks, response: 
     return FileResponse(thumb_path)
 
 
-@app.put("/api/archives/{id}/thumbnail")
+@app.put("/api/archives/{id}/thumbnail", dependencies=authorization)
 def update_thumbnail(id: str, page: int = 1, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
@@ -321,7 +326,7 @@ def update_reading_progression(id: str, page: int):
     }
 
 
-@app.delete("/api/archives/{id}")
+@app.delete("/api/archives/{id}", dependencies=authorization)
 def delete_archive(id: str, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
@@ -354,7 +359,7 @@ def get_statistics(minweight: int = 1, db: Session = Depends(get_db)):
     ]
 
 
-@app.post("/api/database/clean")
+@app.post("/api/database/clean", dependencies=authorization)
 def clean_database(db: Session = Depends(get_db)):
     deleted = 0
     for id, path in db.execute(select(Archive.id, Archive.path)):
@@ -371,7 +376,7 @@ def clean_database(db: Session = Depends(get_db)):
     }
 
 
-@app.post("/api/database/drop")
+@app.post("/api/database/drop", dependencies=authorization)
 def drop_database(db: Session = Depends(get_db)):
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
@@ -381,7 +386,7 @@ def drop_database(db: Session = Depends(get_db)):
     }
 
 
-@app.delete("/api/database/isnew")
+@app.delete("/api/database/isnew", dependencies=authorization)
 def clean_all_new_flag(db: Session = Depends(get_db)):
     raise NotImplementedError
 
@@ -397,7 +402,7 @@ def get_all_categories(db: Session = Depends(get_db)):
     ]
 
 
-@app.put("/api/categories")
+@app.put("/api/categories", dependencies=authorization)
 def create_category(name: Annotated[str, Form()] = None, name2: Annotated[str, Query(alias="name")] = None, pinned: bool = False, search: Union[str, None] = None, db: Session = Depends(get_db)):
     if name is None: name = name2
     if not search is None and len(search) == 0: search = None
@@ -425,7 +430,7 @@ def get_single_category(id: str, response: Response, db: Session = Depends(get_d
         return {"archives": [a.id for a in c.archive], "id": c.id, "last_used": 0, "name": c.name, "pinned": c.pinned, "search": c.search}
 
 
-@app.put("/api/categories/{id}")
+@app.put("/api/categories/{id}", dependencies=authorization)
 def update_category(id: str, name: Union[str, None], search: Union[str, None] = None, pinned: bool = False, db: Session = Depends(get_db)):
     stmt = update(Category).where(Category.id == id)
     if name:
@@ -442,7 +447,7 @@ def update_category(id: str, name: Union[str, None], search: Union[str, None] = 
     }
 
 
-@app.delete("/api/categories/{id}")
+@app.delete("/api/categories/{id}", dependencies=authorization)
 def delete_category(id: str, db: Session = Depends(get_db)):
     db.execute(delete(Category).where(Category.id == id))
     db.commit()
@@ -452,7 +457,7 @@ def delete_category(id: str, db: Session = Depends(get_db)):
     }
 
 
-@app.put("/api/categories/{id}/{archive}")
+@app.put("/api/categories/{id}/{archive}", dependencies=authorization)
 def add_archive_to_category(id: str, archive: str, db: Session = Depends(get_db)):
     a = db.get(Archive, archive)
     c = db.get(Category, id)
@@ -467,7 +472,7 @@ def add_archive_to_category(id: str, archive: str, db: Session = Depends(get_db)
     }
 
 
-@app.delete("/api/categories/{id}/{archive}")
+@app.delete("/api/categories/{id}/{archive}", dependencies=authorization)
 def remove_archive_from_category(id: str, archive: str, db: Session = Depends(get_db)):
     a = db.get(Archive, archive)
     c = db.get(Category, id)
