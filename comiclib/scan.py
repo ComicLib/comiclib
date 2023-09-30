@@ -1,4 +1,6 @@
 import importlib
+import itertools
+import os
 import sys
 import copy
 import hashlib
@@ -34,8 +36,8 @@ logger.info(f"Loaded scanners: {[scanner[1] for scanner in scanners]}")
 
 def scan(paths):
     with Session(engine) as db:
-        for p in paths:  # TODO: https://github.com/python/cpython/issues/77609
-            p = Path(p).resolve().relative_to(Path(settings.content).resolve())
+        for p in paths:
+            p = Path(os.path.relpath(p, settings.content))
             if p.is_relative_to('thumb'):
                 continue
             old_a = db.scalar(select(Archive).where(
@@ -100,7 +102,7 @@ def watch():
         for _, fname in changes:
             try:
                 if _check_inuse:
-                    if fname not in get_files_inuse():
+                    if Path(fname).resolve() not in get_files_inuse():
                         scan([fname])
                 else:
                     while file_sizes.get(fname, -1) != (fsize := Path(fname).stat().st_size):
@@ -112,4 +114,7 @@ def watch():
 
 
 def scannow():
-    scan(Path(settings.content).rglob('*'))
+    # TODO: https://github.com/python/cpython/issues/77609
+    scan(itertools.chain.from_iterable(
+        itertools.chain((Path(dirpath)/dirname for dirname in dirnames), (Path(dirpath)/filename for filename in filenames)) for dirpath, dirnames, filenames in os.walk(settings.content, followlinks=True))
+    )
