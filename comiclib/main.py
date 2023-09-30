@@ -124,14 +124,14 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
 
 
 @app.get("/api/search")
-def search_archive(filter: str, start: int, order: OrderingDirection, category: str = '', sortby: str = "title", db: Session = Depends(get_db)):
+def search_archive(start: int, filter: str = '', order: OrderingDirection = OrderingDirection.asc, category: str = '', sortby: str = "title", db: Session = Depends(get_db)):
     data, recordsFiltered, recordsTotal = do_search(db, category=category, filters=filter,
-                                   start=start, order=order, sortby=sortby, query_total=True)
+                                          count=None if start== -1 else 100, start=start, order=order, sortby=sortby, query_total=True)
     return {"data": data, "draw": 0, "recordsFiltered": recordsFiltered, "recordsTotal": recordsTotal}
 
 
 @app.get("/api/search/random")
-def get_random_archives(category: str, filter: str, count: int = 5, db: Session = Depends(get_db)):
+def get_random_archives(category: str = '', filter: str = '', count: int = 5, db: Session = Depends(get_db)):
     data, _, _ = do_search(db, category=category,
                         filters=filter, order=None, count=count)
     return {"data": data}
@@ -391,7 +391,7 @@ def clean_all_new_flag(db: Session = Depends(get_db)):
 @app.get("/api/categories")
 def get_all_categories(db: Session = Depends(get_db)):
     return [
-        {"archives": [a.id for a in c.archive], "id": str(c.id), "last_used": 0,
+        {"archives": [a.id for a in c.archive], "id": str(c.id), "last_used": "0",
             "name": c.name, "pinned": "1" if c.pinned else "0", "search": "" if c.search is None else c.search}
         for c in db.scalars(select(Category))
     ]

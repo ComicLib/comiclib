@@ -43,7 +43,7 @@ def scan(paths):
             if old_a is None:
                 a = Archive(path=p.as_posix())
                 archive_id = hashlib.blake2b(
-                    p.as_posix().encode(), digest_size=10).hexdigest()
+                    p.as_posix().encode(), digest_size=20).hexdigest()
             elif settings.skip_exits:
                 continue
             else:
