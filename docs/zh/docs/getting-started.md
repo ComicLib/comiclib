@@ -113,6 +113,11 @@ gunicorn comiclib.main:app --worker-class uvicorn.workers.UvicornWorker --bind 0
 
 最后你的命令可能会像这样（我的个人用例）：
 ``` bash
-CONTENT=../mycomics/ UA_convert_jxl= thumb=/tmp/thumb/ gunicorn comiclib.main:app --worker-class uvicorn.workers.UvicornWorker --bind unix:/tmp/comiclib.sock --preload --workers 4
+CONTENT=../mycomics/ thumb=/tmp/thumb/ gunicorn comiclib.main:app --worker-class uvicorn.workers.UvicornWorker --bind unix:/tmp/comiclib.sock --preload --workers 4
 ```
+或者
+``` bash
+importEHdb_matchtorrent=False importEHdb_matchtitle=False CONTENT=../mycomics/ thumb=/tmp/thumb/ uvicorn comiclib.main:app --uds /tmp/comiclib.sock --reload --log-level trace
+```
+用于调试。
 然后通过 Nginx 反代为 HTTPS 连接。

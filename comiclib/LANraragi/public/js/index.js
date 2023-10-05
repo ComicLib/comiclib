@@ -411,7 +411,7 @@ Index.checkVersion = function () {
 
             if (latestVersion > currentVersion) {
                 LRR.toast({
-                    heading: `A new version of LANraragi (${data.tag_name}) is available !`,
+                    heading: `A new version of ComicLib (${data.tag_name}) is available !`,
                     text: `<a href="${data.html_url}">Click here to check it out.</a>`,
                     icon: "info",
                     closeOnClick: false,

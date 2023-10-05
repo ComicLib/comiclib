@@ -3,8 +3,6 @@
 
 中文 | [English](https://github.com/comiclib/comiclib/blob/master/README.md)
 
-💬 加入讨论: [![Discord](https://img.shields.io/discord/1100655762411372604?logo=discord&style=flat-square)](https://discord.gg/UmjCbgGUFW)
-
 # ✨ 特点
 - 📁 支持[多种存档格式](https://comiclib.github.io/comiclib/zh/supported-formats/)
 - 🏷️ 支持tag和分类元数据导入和管理
@@ -44,10 +42,6 @@ uvicorn comiclib.main:app --host 0.0.0.0 --port 80
 其中`--host 0.0.0.0`指定绑定的IP（`0.0.0.0`可使局域网访问），`--port 80`指定了绑定的端口。
 
 📄 更多设置请查看[文档](https://ComicLib.github.io/comiclib/zh/)。
-
-# ⚠️ 警告
-
-目前ComicLib正处在早期开发阶段🚧，随着新功能的加入，很多东西都可能变化。点击GitHub右上角的watch或者加入我们的群组以获取第一个正式版本的通知。
 
 # 👩‍💻 贡献
 我们非常欢迎贡献、问题和功能请求。

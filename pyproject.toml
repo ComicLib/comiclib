@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "comiclib"
-version = "0.0.1b1"
+version = "0.0.1b2"
 authors = [
   { name="URenko" },
 ]

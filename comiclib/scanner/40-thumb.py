@@ -11,6 +11,6 @@ class Scanner:
         if not prev_scanners or not metadata.get('thumb') is None:
             return False
         logger.info(f' <- {path}')
-        thumb = extract_thumbnail(path, id, 1)
+        thumb = extract_thumbnail(path, id, 1, cover=True)
         metadata['thumb'] = str(thumb)
         return True
