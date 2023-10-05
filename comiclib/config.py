@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     debug: bool = False
     loglevel: str = 'INFO'
     content: str = '.'
-    thumb: str = './thumb'
+    cover: str = './thumb'
+    thumb: Union[str, None] = None
     metadata: str = 'sqlite:///./comiclib_metadata.db'
     password: Union[str, None] = None
     skip_exits: bool = True
@@ -31,3 +32,5 @@ logger.debug(settings)
 
 settings.UA_convert_jxl = re.compile(settings.UA_convert_jxl)
 settings.UA_convert_all = re.compile(settings.UA_convert_all)
+if settings.thumb is None:
+    settings.thumb = settings.cover

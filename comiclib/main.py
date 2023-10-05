@@ -231,7 +231,7 @@ def get_archive_thumbnail(id: str, background_tasks: BackgroundTasks, response: 
         if a.thumb.startswith('http'):
             return RedirectResponse(a.thumb)
         else:
-            thumb_path = Path(settings.thumb) / a.thumb
+            thumb_path = Path(settings.cover) / a.thumb
     else:
         thumb_path = Path(settings.thumb) / extract_thumbnail(Path(settings.content) / a.path, id, page, cache=True)
     return FileResponse(thumb_path)
@@ -242,7 +242,7 @@ def update_thumbnail(id: str, page: int = 1, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    thumb_path = extract_thumbnail(Path(settings.content) / a.path, a.id, page)
+    thumb_path = extract_thumbnail(Path(settings.content) / a.path, a.id, page, cover=True)
     a.thumb = str(thumb_path)
     db.commit()
     return {
