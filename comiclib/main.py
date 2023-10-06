@@ -537,7 +537,7 @@ def csshead():
     css_default_data = {"g.css": "H-Verse", "modern.css": "Hachikuji",
                         "modern_clear.css": "Yotsugi", "modern_red.css": "Nadeko", "ex.css": "Sad Panda"}
     themes_header = ""
-    for p in Path("/home/root/LANraragi/public/themes").glob("*.css"):
+    for p in (app_path / "LANraragi/public/themes").glob("*.css"):
         if p.name == config_style:
             themes_header += f'<link rel="stylesheet" type="text/css" title="{css_default_data.get(p.name, p.name)}" href="/themes/{p.name}">'
         else:
