@@ -102,7 +102,7 @@ def watch():
         for _, fname in changes:
             try:
                 if _check_inuse:
-                    if Path(fname).resolve() not in get_files_inuse():
+                    if str(Path(fname).resolve()) not in get_files_inuse():
                         scan([fname])
                 else:
                     while file_sizes.get(fname, -1) != (fsize := Path(fname).stat().st_size):
