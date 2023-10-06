@@ -64,7 +64,7 @@ The basic structure of scanners is as follows
 ``` python
 from pathlib import Path
 from typing import Union
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 # some import and pre-process
 # this may be executed multiple times, thus should avoid things like opening files
 

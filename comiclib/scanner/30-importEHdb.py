@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Union
 import sqlite3, re, ast
 from datetime import date
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     importEHdb_thumb: bool = True

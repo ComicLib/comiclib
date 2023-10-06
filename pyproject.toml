@@ -18,6 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "fastapi",
+    'pydantic-settings',
     'sqlalchemy',
     'python-multipart',
     'pillow',

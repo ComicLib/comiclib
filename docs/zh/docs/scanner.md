@@ -63,7 +63,7 @@ ComicLib 的主体仅负责遍历漫画库，漫画文件的判断、解析等�
 ``` python
 from pathlib import Path
 from typing import Union
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 # some import and pre-process
 # this may be executed multiple times, thus should avoid things like opening files
 
