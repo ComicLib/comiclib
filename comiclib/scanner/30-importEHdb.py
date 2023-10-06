@@ -2,11 +2,12 @@ from pathlib import Path
 from typing import Union
 import sqlite3, re, ast
 from datetime import date
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     importEHdb_thumb: bool = True
-    importEHdb_matchtitle: Union[bool, str] = True
+    importEHdb_matchtitle: Union[bool, str] = Field(default=True, union_mode='left_to_right')
     importEHdb_matchtorrent: bool = True
 settings = Settings()
 
