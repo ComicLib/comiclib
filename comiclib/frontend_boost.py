@@ -80,7 +80,7 @@ if not version_file.exists() or int(version_file.read_text()) < vendor_version:
 
     s = requests.session()
     for name in dependencies:
-        logger.info('downloading', name)
+        logger.info('downloading %s', name)
         r = s.get(f"https://registry.npmjs.com/{name}/-/{name.rpartition('/')[-1]}-{dependencies[name]}.tgz", allow_redirects=True)
         r.raise_for_status()
         with tarfile.open(fileobj=io.BytesIO(r.content), mode='r:gz') as t:
