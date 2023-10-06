@@ -3,11 +3,10 @@ print(f" >>> ComicLib v{__version__}")
 
 from .scan import watch, scannow
 from .config import settings
-from .utils import extract_thumbnail, convert_image
+from .utils import is_image, extract_thumbnail, convert_image, ArchiveFile
 from typing import Union, Annotated
 from enum import Enum
 from pathlib import Path
-from zipfile import ZipFile
 import re
 import base64
 import tempfile
@@ -267,11 +266,11 @@ def extract_archive(id: str, force: bool = True, db: Session = Depends(get_db)):
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
     path = Path(settings.content) / a.path
     if path.is_dir():
-        pages = [f"./api/archives/{id}/page?path="+quote(p.name, safe='') for p in sorted(path.iterdir()) if p.suffix != '.txt' and not p.name.startswith('.')]
-    elif path.suffix == '.zip':
-        with ZipFile(path) as z:
+        pages = [f"./api/archives/{id}/page?path="+quote(p.name, safe='') for p in sorted(path.iterdir()) if is_image(p)]
+    elif ArchiveFile.support_formats.fullmatch(path.name):
+        with ArchiveFile(path) as z:
             pages = [f"./api/archives/{id}/page?path="+quote(z_info.filename, safe='') for z_info in filter(
-                lambda z_info: not z_info.is_dir(), z.infolist())]
+                lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist())]
     else:
         raise NotImplementedError
     return {"job": -1, "pages": pages}
@@ -292,15 +291,15 @@ def get_archive_page(request: Request, id: str, path: str, db: Session = Depends
             saveto.parent.mkdir(parents=True, exist_ok=True)
             if p.is_dir():
                 convert_image(p / path, saveto)
-            elif p.suffix == '.zip':
-                with ZipFile(p) as z, z.open(path) as f:
+            elif ArchiveFile.support_formats.fullmatch(path.name):
+                with ArchiveFile(p) as z, z.open(path) as f:
                     convert_image(f, saveto)
             else:
                 raise NotImplementedError
         return FileResponse(saveto)
-    if p.suffix == '.zip':
+    if ArchiveFile.support_formats.fullmatch(str(p)):
         def iterfile():
-            with ZipFile(p) as z, z.open(path) as f:
+            with ArchiveFile(p) as z, z.open(path) as f:
                 yield from f
         return StreamingResponse(iterfile())
     else:
