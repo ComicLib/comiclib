@@ -35,6 +35,7 @@ The following is a list of available settings:
 | `password` | Admin password (also used as API Key currently) [^1]. If it is `None`, any visitor will have editing permissions. This feature is designed to protect against gentlemen but not villains. If you need security protection, please use e.g. the HTTP basic authentication of the reverse proxy, Cloudflare Access or TLS client certificate, etc. | `None`|
 | `skip_exists`| Skip comics that have been scanned into the metadata database during scanning? (`True`/`False`) | `True` |
 | `watch` | Monitor comic folders and automatically scan (`True`/`False`) | `True` |
+| `display_subtitle` | Display subtitles instead of main titles if available. The title cannot be edited in this mode. | `True` |
 | `UA_convert_jxl` | For requests with matched user-agent, convert JPEG XL files to other popular formats on the server side. The value is a regular expression. | `Android` |
 | `UA_convert_all` | For requests with matched user-agent, convert all files to other popular formats on the server side. The value is a regular expression. | `\b\B` (will not match anything) |
 

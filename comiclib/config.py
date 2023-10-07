@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     password: Union[str, None] = None
     skip_exits: bool = True
     watch: bool = True
+    display_subtitle: bool = True
     UA_convert_jxl: str = 'Android'
     UA_convert_all: str = r'\b\B'  # default: match nothing
 

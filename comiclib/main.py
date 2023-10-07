@@ -72,6 +72,9 @@ if settings.password is None:
 else:
     authorization = [Depends(verify_token)]
 
+def display_title(a: Archive) -> str:
+    return a.subtitle if settings.display_subtitle and not a.subtitle is None else a.title
+
 # https://sugoi.gitbook.io/lanraragi/v/dev/api-documentation/getting-started
 
 # Search API
@@ -122,7 +125,7 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
         stmt = stmt.offset(start)
     return [
         {"arcid": a.id, "isnew": "none", "extension": Path(
-            a.path).suffix, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": a.title}
+            a.path).suffix, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": display_title(a)}
         for a in db.scalars(stmt)
     ], recordsFiltered, recordsTotal
 
@@ -171,7 +174,7 @@ def handle_datatables(request: Request, draw: int, start: int, length: int, filt
 def get_all_archives(db: Session = Depends(get_db)):
     data = [
         {"arcid": a.id, "isnew": "none", "extension": Path(
-            a.path).suffix, "pagecount": a.pagecount, "progress": 0, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": a.title}
+            a.path).suffix, "pagecount": a.pagecount, "progress": 0, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": display_title(a)}
         for a in db.scalars(select(Archive))
     ]
     return {"data": data}
@@ -187,12 +190,17 @@ def get_archive_metadata(id: str, db: Session = Depends(get_db)):
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "metadata", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
-    return {"arcid": a.id, "isnew": "false", "pagecount": a.pagecount, "progress": 1, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": a.title}
+    return {"arcid": a.id, "isnew": "false", "pagecount": a.pagecount, "progress": 1, "tags": ", ".join(map(lambda t: t.tag, a.tags)), "title": display_title(a)}
 
 
 @app.put("/api/archives/{id}/metadata", dependencies=authorization)
 def update_archive_metadata(id: str, title: Annotated[str, Form()], tags: Annotated[str, Form()], db: Session = Depends(get_db)):
-    db.execute(update(Archive).where(Archive.id == id).values(title=title))
+    if settings.display_subtitle:
+        a = db.get(Archive, id)
+        if not (a.title == title or a.subtitle == title):
+            return {"operation": "update_metadata", "error": "You are using a non-standard title display mode, and there is ambiguity in modifying the title.", "success": 0}
+    else:
+        db.execute(update(Archive).where(Archive.id == id).values(title=title))
     db.execute(delete(Tag).where(Tag.archive_id == id))
     db.add_all(map(lambda t: Tag(archive_id=id, tag=t.strip()), tags.split(',')))
     db.commit()
