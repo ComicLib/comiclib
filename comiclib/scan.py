@@ -64,7 +64,9 @@ def scan(paths):
             if not prev_scanners:
                 continue
             if not any(tag.startswith("date_added:") for tag in metadata["tags"]):
-                metadata["tags"].add(f"date_added:{int(real_path.stat().st_mtime)}")
+                # Directory modification times are often difficult to synchronize.
+                mtime_path = next(real_path.iterdir()) if real_path.is_dir() else real_path
+                metadata["tags"].add(f"date_added:{int(mtime_path.stat().st_mtime)}")
             logging.debug(pformat(metadata))
             a.title = metadata["title"]
             a.subtitle = metadata["subtitle"]
