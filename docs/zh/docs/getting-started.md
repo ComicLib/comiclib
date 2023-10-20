@@ -34,6 +34,18 @@
 pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 ```
 
+### Docker（试验性）
+
+``` bash
+docker run -p 8000:8000 \
+--mount type=bind,source=你的漫画库路径,target=/root/comiclib \
+urenko/comiclib
+```
+现在 ComicLib 运行在了 http://localhost:8000 。
+
+注：目前监视漫画文件夹默认对 Docker 禁用。
+
+
 ## 运行
 
 切换工作目录到你的漫画库的位置，通过如下命令启动：

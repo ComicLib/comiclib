@@ -18,6 +18,11 @@ See [Settings](settings.md) to change the behavior.
 
 Treat *.zip files as comic files.
 
+### 11-archive.py
+
+Treat regular archived files, except zip, as comic files.
+It requires 7-Zip, download it from [https://7-zip.org/download.html](https://7-zip.org/download.html) and make sure 7zzs or 7zz or 7z is in the working directory or the directory indicated by PATH. 7-Zip obtained from some other sources may not support rar files.
+
 ### 20-ccloli.py
 
 Parse comic files downloaded via [ccloli/E-Hentai-Downloader](https://github.com/ccloli/E-Hentai-Downloader).
@@ -64,6 +69,7 @@ The basic structure of scanners is as follows
 ``` python
 from pathlib import Path
 from typing import Union
+from pydantic import Field
 from pydantic_settings import BaseSettings
 # some import and pre-process
 # this may be executed multiple times, thus should avoid things like opening files
@@ -71,7 +77,7 @@ from pydantic_settings import BaseSettings
 # optional
 class Settings(BaseSettings):
     myscanner_settingA: bool = True  # It is recommended to prefix with the scanner name
-    myscanner_settingB: Union[bool, str] = True
+    myscanner_settingB: Union[bool, str] = Field(default=True, union_mode='left_to_right')
 settings = Settings()
 
 class Scanner:

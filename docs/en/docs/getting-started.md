@@ -34,6 +34,18 @@ If you want to try out the latest features or fixes, consider installing from so
 pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 ```
 
+### Docker (Experimental)
+
+``` bash
+docker run -p 8000:8000 \
+--mount type=bind,source=<YOUR_COMIC_DIRECTORY_HERE>,target=/root/comiclib \
+urenko/comiclib
+```
+ComicLib now runs at http://localhost:8000 .
+
+P.S.: Monitoring comic folders is disabled by default for Docker currently.
+
+
 ## Launch
 
 Change the working directory to the location of your comic library and run the following command to start:

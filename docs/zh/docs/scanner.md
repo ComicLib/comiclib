@@ -18,6 +18,11 @@ ComicLib 的主体仅负责遍历漫画库，漫画文件的判断、解析等�
 
 将 *.zip 文件作为漫画文件。
 
+### 11-archive.py
+
+将常见压缩文件（除 zip 外）作为漫画文件。
+需要安装 7-Zip，请从 [https://7-zip.org/download.html](https://7-zip.org/download.html) 下载并确保 7zzs 或 7zz 或 7z 处在工作目录或 PATH 指示的目录内。从其他一些渠道获取的 7-Zip 可能不支持 rar 文件。
+
 ### 20-ccloli.py
 
 解析通过 [ccloli/E-Hentai-Downloader](https://github.com/ccloli/E-Hentai-Downloader) 下载的漫画文件。
@@ -63,6 +68,7 @@ ComicLib 的主体仅负责遍历漫画库，漫画文件的判断、解析等�
 ``` python
 from pathlib import Path
 from typing import Union
+from pydantic import Field
 from pydantic_settings import BaseSettings
 # some import and pre-process
 # this may be executed multiple times, thus should avoid things like opening files
@@ -70,7 +76,7 @@ from pydantic_settings import BaseSettings
 # optional
 class Settings(BaseSettings):
     myscanner_settingA: bool = True  # It is recommended to prefix with the scanner name
-    myscanner_settingB: Union[bool, str] = True
+    myscanner_settingB: Union[bool, str] = Field(default=True, union_mode='left_to_right')
 settings = Settings()
 
 class Scanner:
