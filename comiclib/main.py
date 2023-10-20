@@ -46,7 +46,7 @@ app.mount("/themes", StaticFiles(directory=app_path / "LANraragi/public/themes")
 @app.middleware("http")
 async def add_COEPCOOP(request: Request, call_next):
     response = await call_next(request)
-    if request.url.path == '/reader' or (request.headers.get("referer") and urlparse(request.headers["referer"]).path == '/reader'):
+    if (request.url.path == '/reader' or (request.headers.get("referer") and urlparse(request.headers["referer"]).path == '/reader')) and re.search(settings.UA_convert_jxl, request.headers.get("user-agent", "")) is not None:
         response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
         response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
     return response
