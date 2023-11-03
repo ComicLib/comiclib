@@ -18,6 +18,9 @@ from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, JSO
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
 
+# https://github.com/lmr/Template-Toolkit-Python/pull/2
+import collections.abc
+collections.Callable = collections.abc.Callable
 from template import Template
 
 from . import frontend_boost

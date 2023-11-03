@@ -22,8 +22,7 @@ dependencies = [
     'sqlalchemy',
     'python-multipart',
     'pillow',
-    'Template-Toolkit-Python ; python_version < "3.10"',
-    'Template-Toolkit-Python-2 ; python_version >= "3.10"',
+    'Template-Toolkit-Python',
     'watchfiles',
     'requests'
 ]
