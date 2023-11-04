@@ -26,7 +26,7 @@ from template import Template
 from . import frontend_boost
 
 from .database import engine, Base, Archive, Tag, Category
-from sqlalchemy import func, select, or_, update, delete
+from sqlalchemy import func, select, not_, or_, update, delete
 from sqlalchemy.orm import Session
 Base.metadata.create_all(bind=engine)
 
@@ -103,6 +103,11 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
         else:
             filters += ', ' + search
     for f in filter(None, map(str.strip, filters.split(','))):
+        if f[0] == '-':
+            f = f[1:]
+            condition = lambda *expressions: not_(or_(*expressions))
+        else:
+            condition = or_
         pre =  suff = '%'
         if f[-1] == '$':
             f = f[:-1]
@@ -112,7 +117,7 @@ def do_search(db: Session, category: str, filters: str, order: Union[OrderingDir
             pre = suff = ''
         f = pre + f + suff
         f.replace('*', '%').replace('?', '_')
-        stmt = stmt.where(or_(Archive.title.like(f), Archive.subtitle.like(f), Archive.id.in_(select(Archive.id).outerjoin(Archive.tags).where(Tag.tag.like(f)))))
+        stmt = stmt.where(condition(Archive.title.like(f), Archive.subtitle.like(f), Archive.id.in_(select(Archive.id).outerjoin(Archive.tags).where(Tag.tag.like(f)))))
     if order is None:
         stmt = stmt.order_by(func.random())
     else:
