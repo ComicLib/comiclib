@@ -559,8 +559,8 @@ def csshead():
 
 
 @app.get("/", response_class=RedirectResponse)
-def read_root():
-    return "index"
+def read_root(request: Request):
+    return "index?" + request.url.query
 
 
 @app.post("/login")
