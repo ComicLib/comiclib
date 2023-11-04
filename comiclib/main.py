@@ -76,7 +76,10 @@ else:
     authorization = [Depends(verify_token)]
 
 def display_title(a: Archive) -> str:
-    return a.subtitle if settings.display_subtitle and not a.subtitle is None else a.title
+    if settings.display_title_format is None:
+        return a.title
+    else:
+        return settings.display_title_format.replace('{title}', a.title).replace('{subtitle}', '' if a.subtitle is None else a.subtitle).replace('{path}', a.path).replace(r'\n', '\n')
 
 # https://sugoi.gitbook.io/lanraragi/v/dev/api-documentation/getting-started
 
@@ -198,7 +201,7 @@ def get_archive_metadata(id: str, db: Session = Depends(get_db)):
 
 @app.put("/api/archives/{id}/metadata", dependencies=authorization)
 def update_archive_metadata(id: str, title: Annotated[str, Form()], tags: Annotated[str, Form()], db: Session = Depends(get_db)):
-    if settings.display_subtitle:
+    if settings.display_title_format is not None:
         a = db.get(Archive, id)
         if not (a.title == title or a.subtitle == title):
             return {"operation": "update_metadata", "error": "You are using a non-standard title display mode, and there is ambiguity in modifying the title.", "success": 0}

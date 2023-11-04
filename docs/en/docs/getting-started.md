@@ -125,11 +125,11 @@ For more settings, please refer to [Gunicorn's documentation](https://docs.gunic
 
 In the end your command might look like this (my personal use case):
 ``` bash
-CONTENT=../mycomics/ thumb=/tmp/thumb/ gunicorn comiclib.main:app --worker-class uvicorn.workers.UvicornWorker --bind unix:/tmp/comiclib.sock --preload --workers 4
+CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}\n{path}' gunicorn comiclib.main:app --worker-class uvicorn.workers.UvicornWorker --bind unix:/tmp/comiclib.sock --preload --workers 4
 ```
 or
 ``` bash
-importEHdb_matchtorrent=False importEHdb_matchtitle=False CONTENT=../mycomics/ thumb=/tmp/thumb/ uvicorn comiclib.main:app --uds /tmp/comiclib.sock --reload --log-level trace
+importEHdb_matchtorrent=False importEHdb_matchtitle=False CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}\n{path}' uvicorn comiclib.main:app --uds /tmp/comiclib.sock --reload --log-level trace
 ```
 for debugging.
 Then use Nginx to reverse proxy to HTTPS connection.

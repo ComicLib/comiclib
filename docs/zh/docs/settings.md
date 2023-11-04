@@ -35,7 +35,7 @@
 | `password` | 管理密码（目前也用作 API 密钥）[^1]，若为`None`则任何访客皆可编辑。此功能防君子不防小人，若需安全保护请借助反向代理的 HTTP 基本验证、Cloudflare Access 或 TLS 客户端证书等。| `None`|
 | `skip_exists`| 扫描时是否跳过曾扫入元数据库的漫画？（`True`/`False`）| `True` |
 | `watch` | 监视漫画文件夹，自动扫描 （`True`/`False`）| `True` |
-| `display_subtitle` | 展现子标题（如果有）而不是主标题。该模式下无法编辑标题。 | `True` |
+| `display_title_format` | 该字符串指定展示标题的格式。可以使用 `{title}`, `{subtitle}`, `{path}` 作为占位符，`\n` 会被转义为换行。设定此项时无法编辑标题。 | `None`（原标题） |
 | `UA_convert_jxl` | 对于哪些 user-agent 的请求在服务端将 JPEG XL 文件转为其他流行格式，该值是一个用于匹配的正则表达式 | `Android` |
 | `UA_convert_all` | 对于哪些 user-agent 的请求在服务端将所有文件转为其他流行格式，该值是一个用于匹配的正则表达式 | `\b\B`（不匹配任何东西）|
 
