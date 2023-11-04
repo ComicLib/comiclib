@@ -342,6 +342,8 @@ def delete_archive(id: str, db: Session = Depends(get_db)):
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
     p = Path(settings.content) / a.path
+    db.execute(delete(Archive).where(Archive.id == id))
+    db.commit()
     if p.is_file():
         p.unlink()
     else:
