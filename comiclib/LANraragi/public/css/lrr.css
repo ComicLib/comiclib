@@ -1,5 +1,9 @@
 /* Global LANraragi CSS. Don't mess !*/
 
+h1 {
+  white-space: pre-line;
+}
+
 td.itd {
   overflow: hidden;
   text-overflow: ellipsis;
