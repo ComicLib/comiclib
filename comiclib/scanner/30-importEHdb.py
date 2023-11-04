@@ -76,8 +76,10 @@ Currently only support matching by the source URL (from previous scanners).'''
             return False
         elif prev_scanners and not (gid := self.get_gid(metadata)) is None:
             logger.info(f' <- {path}')
-            res = self.con.execute("SELECT title, title_jpn, category, posted, thumb, artist, `group`, parody, character, female, male, language, mixed, other, cosplayer, rest FROM gallery WHERE gid == ?", (gid,)).fetchone()
+            res = self.con.execute("SELECT title, title_jpn, category, posted, thumb, token, artist, `group`, parody, character, female, male, language, mixed, other, cosplayer, rest FROM gallery WHERE gid == ?", (gid,)).fetchone()
             if res is None: return False
+            token = res.pop('token')
+            metadata["id"] = f"EH{gid:>018}{token}{id[-10:]}"
             metadata["title"] = res.pop("title")
             metadata["subtitle"] = res.pop("title_jpn")
             thumb = res.pop("thumb")
@@ -90,7 +92,6 @@ Currently only support matching by the source URL (from previous scanners).'''
                 if res[namespace] is None: continue
                 metadata["tags"] |= set(map(lambda v: namespace+':'+v, ast.literal_eval(res[namespace])))
             if metadata["source"] is None or not re.fullmatch(r"https?://e[x-]hentai\.org/g/(\d+)/", metadata["source"]) is None:
-                token = self.con.execute("SELECT token FROM gallery WHERE gid == ?", (gid,)).fetchone()['token']
                 metadata["source"] = f"https://exhentai.org/g/{gid}/{token}/"
             return True
         else:

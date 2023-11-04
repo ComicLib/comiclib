@@ -103,6 +103,13 @@ class Scanner:
 `Scanner.scan` 的参数：
 
 * `path`: 文件/目录路径
-* `id`: 由 ComicLib 生成的唯一 ID，不要试图写入此值
-* `metadata`: 由前面脚本处理后得到的元数据，字段有 `title`, `subtitle` `source`, `pagecount`, `tags`, `categories`，最初值皆为 `None` 或 `set()`。扫描脚本将得到的元数据写入该 `dict`。
+* `id`: 由 ComicLib 预生成的唯一 ID，是相对于 `CONTENT` 的路径的散列值，但最终数据库使用的是 `metadata[id]` 给出的 ID，见下面自定义ID的说明。
+* `metadata`: 由前面脚本处理后得到的元数据，字段有 `id`, `title`, `subtitle` `source`, `pagecount`, `tags`, `categories`，除`id` 外最初值皆为 `None` 或 `set()`。扫描脚本将得到的元数据写入该 `dict`。
 * `prev_scanners`: 前面返回 `True` 的脚本名称。
+
+!!! example "自定义ID（试验性）"
+    ComicLib 先根据路径预生成一个唯一 ID，以 `00` 开头，作为参数 `id` 的值。最初这一 ID 与 `metadata[id]` 相同。
+    扫描脚本可以根据 `id` 、前面扫描脚本修改的 `metadata[id]` 和其他信息生成一个新的 ID，写入 `metadata[id]`。
+    一般约定 ID 的前两个字符表示 ID 的含义，如内置脚本 30-importEHdb.py 用 `EH` 表示其设计的带有 ehentai gid 信息的 ID。
+    最终的 `metadata[id]` 作为漫画的唯一标识符写入数据库。
+    ID 必须保证唯一，且为 40 个字符。自定义 ID 对重新扫描更新元数据无效。

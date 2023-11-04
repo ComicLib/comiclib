@@ -44,14 +44,13 @@ def scan(paths):
                 Archive.path == p.as_posix()))
             if old_a is None:
                 a = Archive(path=p.as_posix())
-                archive_id = hashlib.blake2b(
-                    p.as_posix().encode(), digest_size=20).hexdigest()
+                archive_id = '00' + hashlib.blake2b(p.as_posix().encode(), digest_size=19).hexdigest()  # 00 stands for ID type origin
             elif settings.skip_exits:
                 continue
             else:
                 a = old_a
                 archive_id = old_a.id
-            metadata = {"title": a.title, "subtitle": a.subtitle, "source": a.source, "pagecount": a.pagecount, "tags": set(
+            metadata = {"id": archive_id, "title": a.title, "subtitle": a.subtitle, "source": a.source, "pagecount": a.pagecount, "tags": set(
                 t.tag for t in a.tags if not t.tag.startswith("date_added:")), "categories": set(c.name for c in a.categories)}
             real_path = Path(settings.content) / p
             prev_scanners = []
@@ -76,7 +75,7 @@ def scan(paths):
             for tag in filter(lambda t: not t.tag in metadata["tags"], a.tags):
                 a.tags.remove(tag)
             for tag in metadata["tags"] - set(t.tag for t in a.tags):
-                a.tags.append(Tag(archive_id=archive_id, tag=tag))
+                a.tags.append(Tag(archive_id=metadata["id"], tag=tag))
             for category in filter(lambda c: not c.name in metadata["categories"], a.categories):
                 a.categories.remove(category)
             for category in metadata["categories"] - set(c.name for c in a.categories):
@@ -85,7 +84,7 @@ def scan(paths):
                     db.add(c)
                 a.categories.append(c)
             if old_a is None:
-                a.id = archive_id
+                a.id = metadata["id"]
                 db.add(a)
             db.commit()
 
