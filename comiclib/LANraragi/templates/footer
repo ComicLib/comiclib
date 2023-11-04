@@ -5,5 +5,5 @@
     [% descstr %]
     <br>
     [% END %]
-    Powered by ComicLib.</a>
+    Powered by <a href="https://github.com/ComicLib/comiclib"> ComicLib.</a>
 </p>

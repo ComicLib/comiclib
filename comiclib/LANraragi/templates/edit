@@ -84,36 +84,6 @@
 						</td>
 					</tr>
 
-					<!-- <tr>
-						<td style='text-align:left; width:100px; vertical-align:top'>Import Tags from Plugin : <br />
-							<input type='button' name='tag_import' value='Help' id="show-help" class='stdbtn'
-								style='min-width:90px;'></input>
-						</td>
-						<td id="plugin_table" style="text-align: left">
-
-							<select id="plugin" class="favtag-btn">
-								[% FOREACH plugin IN plugins %]
-								<option value="[% plugin.namespace %]" arg="[% plugin.oneshot_arg %]">[% plugin.name %]
-								</option>
-								[% END %]
-							</select>
-
-							<input class='stdbtn' type='button' style="min-width:90px;" id="run-plugin" value='Go!' />
-							<br />
-
-							<span id="arg_label">[% plugins.first.oneshot_arg %] :</span> <br />
-							<input id='arg' class='stdinput' type='text' style='width:98%; max-width:768px' size='20'
-								value="">
-
-							<br />
-
-							<i class='fa fa-2x fa-exclamation-circle' style='margin-top:4px'></i> Using a Plugin will
-							save any modifications to
-							archive metadata
-							you might have made !
-						</td>
-					</tr> -->
-
 					<tr>
 						<td colspan='2' style='text-align:center'> <br />
 							<input class='stdbtn' type='button' id="save-metadata" value='Save Metadata' />

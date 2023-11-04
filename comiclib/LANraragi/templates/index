@@ -50,22 +50,11 @@
 
 	[% IF userlogged %]
 	<p id="nb">
-		<!-- <i class="fa fa-caret-right"></i>
-		<a href="./upload">Add Archives</a>
-		<span style="margin-left:5px"></span>
-		<i class="fa fa-caret-right"></i>
-		<a href="./batch">Batch Operations</a>
-		<span style="margin-left:5px"></span>
-		<i class="fa fa-caret-right"></i>
-		<a href="./config">Settings</a>
-		<span style="margin-left:5px"></span> -->
 		<i class="fa fa-caret-right"></i>
 		<a href="./config/categories">Modify Categories</a>
 		<span style="margin-left:5px"></span>
 		<i class="fa fa-caret-right"></i>
 		<a href="./stats">Statistics</a>
-		<!-- <i class="fa fa-caret-right"></i>
-		<a href="./logs">Logs</a> -->
 		[% IF needlog %]
 		<i class="fa fa-caret-right"></i>
 		<a href="./logout">Logout</a>
