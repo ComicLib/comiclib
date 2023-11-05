@@ -24,7 +24,9 @@ def blur_title(title: str):
         '*': None,
         '_': None,
         '(': None,
-        ')': None
+        ')': None,
+        ':': None,
+        '+': None
     }))
 
 def dict_factory(cursor, row):
