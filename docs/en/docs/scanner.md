@@ -4,7 +4,7 @@ The main part of ComicLib is only responsible for traversing the comic library. 
 
 Scanners are divided into [built-in scanners](https://github.com/ComicLib/comiclib/tree/master/comiclib/scanner) and external scanners. All *.py files in the working directory will be loaded as external scanners.
 
-For each candidate comic file (folder), scanners are executed sequentially in the order of the file name (regardless of whether it is built-in or not) to complete different tasks.
+For each candidate comic file (folder), scanners are executed sequentially in the order of the file name (regardless of whether it is built-in or not) to complete different tasks, like an assembly line.
 
 You can find some external scanners in the [official repository](https://github.com/ComicLib/scanner), or download those written by others. In addition, you can write it by yourself as long as you know some simple Python.
 
