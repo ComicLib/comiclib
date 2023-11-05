@@ -110,6 +110,6 @@ class Scanner:
 !!! example "自定义ID（试验性）"
     ComicLib 先根据路径预生成一个唯一 ID，以 `00` 开头，作为参数 `id` 的值。最初这一 ID 与 `metadata[id]` 相同。
     扫描脚本可以根据 `id` 、前面扫描脚本修改的 `metadata[id]` 和其他信息生成一个新的 ID，写入 `metadata[id]`。
-    一般约定 ID 的前两个字符表示 ID 的含义，如内置脚本 30-importEHdb.py 用 `EH` 表示其设计的带有 ehentai gid 信息的 ID。
+    一般约定 ID 的前几个字符表示 ID 的含义，如内置脚本用 `EH` 表示其设计的带有 ehentai gid 信息的 ID。
     最终的 `metadata[id]` 作为漫画的唯一标识符写入数据库。
     ID 必须保证唯一，且为 40 个字符。自定义 ID 对重新扫描更新元数据无效。

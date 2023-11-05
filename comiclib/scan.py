@@ -84,6 +84,7 @@ def scan(paths):
                     db.add(c)
                 a.categories.append(c)
             if old_a is None:
+                assert len(metadata["id"]) == 40, f'The length of ID {metadata["id"]} is incorrect.'
                 a.id = metadata["id"]
                 db.add(a)
             db.commit()

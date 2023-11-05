@@ -111,6 +111,6 @@ Parameters of `Scanner.scan`:
 !!! example "custom ID (Experimental)"
     ComicLib first pre-generates a unique ID based on the path, starting with `00` as the value of the parameter `id`. Initially this ID is the same as `metadata[id]`.
     The scanner can generate a new ID based on `id`, `metadata[id]` modified by the previous scanning script and other information, and write it into `metadata[id]`.
-    It is generally agreed that the first two characters of the ID represent the meaning of the ID. For example, the built-in scanner 30-importEHdb.py uses `EH` to represent its designed ID with ehentai gid information.
+    It is generally agreed that the first several characters of the ID represent the meaning of the ID. For example, the built-in scanner uses `EH` to represent its designed ID with ehentai gid information.
     The final `metadata[id]` is written to the database as a unique identifier for the comic.
     ID must be unique, and be 40 characters. Custom IDs will not work for updating metadata during rescanning
