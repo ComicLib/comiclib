@@ -28,14 +28,12 @@ class Scanner:
             else:
                 return False
             logger.info(f' <- {path}')
-            if "hentai.org" not in info[2]: return False
-            metadata["title"] = info[0]
-            metadata["subtitle"] = info[1]
             metadata["source"] = info[2]
             m = re.match(r"https?://e[x-]hentai\.org/g/(\d+)/(\w+)", metadata["source"])
             if m is None:
-                logger.error(metadata["source"])
-                raise NotImplementedError('Unknow source format.')
+                return False
+            metadata["title"] = info[0]
+            metadata["subtitle"] = info[1]
             metadata["id"] = f"EH{m[1]:>018}{m[2]}{id[-10:]}"
             line_tags = False
             for line in info:
