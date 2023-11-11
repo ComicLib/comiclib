@@ -23,6 +23,7 @@ from .config import settings
 
 mimetypes.add_type('image/jxl', '.jxl')
 def is_image(p: Union[str, Path]):
+    if Path(p).parts[0] == '__MACOSX': return False
     mime = mimetypes.guess_type(p, strict=False)[0]
     return False if mime is None else mime.partition('/')[0] == 'image'
 
