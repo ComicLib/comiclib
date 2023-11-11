@@ -56,7 +56,7 @@ def extract_thumbnail(path: Union[str, Path], id: str, page: int, cache=False, c
         convert_image(sorted(filter(is_image, path.iterdir()))[page-1], saveto, thumbnail=True)
     elif ArchiveFile.support_formats.fullmatch(path.name):
         with ArchiveFile(path) as z:
-            with z.open(list(filter(lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist()))[page-1].filename) as f:
+            with z.open(sorted(map(lambda z_info: z_info.filename, filter(lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist())))[page-1]) as f:
                 convert_image(f, saveto, thumbnail=True)
     else:
         raise NotImplementedError

@@ -288,8 +288,7 @@ def extract_archive(id: str, force: bool = True, db: Session = Depends(get_db)):
         pages = [f"./api/archives/{id}/page?path="+quote(p.name, safe='') for p in sorted(path.iterdir()) if is_image(p)]
     elif ArchiveFile.support_formats.fullmatch(path.name):
         with ArchiveFile(path) as z:
-            pages = [f"./api/archives/{id}/page?path="+quote(z_info.filename, safe='') for z_info in filter(
-                lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist())]
+            pages = [f"./api/archives/{id}/page?path="+quote(filename, safe='') for filename in sorted(map(lambda z_info: z_info.filename, filter(lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist())))]
     else:
         raise NotImplementedError
     return {"job": -1, "pages": pages}
