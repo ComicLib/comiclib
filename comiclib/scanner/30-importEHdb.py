@@ -42,7 +42,7 @@ Currently only support matching by the source URL (from previous scanners).'''
         if Path(settings.importEHdb_API_DUMP_PATH).exists():
             logger.info('Loading ehentai metadata database, please wait...')
             # do it in readonly mode, to maintain a readonly container image
-            self.con = sqlite3.connect("file:"+settings.importEHdb_API_DUMP_PATH+"?mode=ro", uri=True, check_same_thread=False)
+            self.con = sqlite3.connect("file:"+settings.importEHdb_API_DUMP_PATH+"?mode=ro&immutable=1", uri=True, check_same_thread=False)
             if settings.importEHdb_matchtitle:
                 self.db_title = {blur_title(row[0]): row[1] for row in self.con.execute("SELECT title, gid FROM gallery") if not row[0] is None}
                 self.db_title_jpn = {blur_title(row[0]): row[1] for row in self.con.execute("SELECT title_jpn, gid FROM gallery") if not row[0] is None}
