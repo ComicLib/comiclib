@@ -4,6 +4,7 @@ import sqlite3, re, ast
 from datetime import date
 from pydantic import Field
 from pydantic_settings import BaseSettings
+import os
 
 class Settings(BaseSettings):
     importEHdb_thumb: bool = True
@@ -38,9 +39,13 @@ class Scanner:
 Currently only support matching by the source URL (from previous scanners).'''
     
     def __init__(self) -> None:
-        if Path("api_dump.sqlite").exists():
+        # Load database from $API_DUMP_PATH when the environment variable is set
+        # or fallback to api_dump.sqlite in the current directory
+        api_dump_path = os.getenv('API_DUMP_PATH', default="api_dump.sqlite")
+        if Path(api_dump_path).exists():
             logger.info('Loading ehentai metadata database, please wait...')
-            self.con = sqlite3.connect("api_dump.sqlite", check_same_thread=False)
+            # do it in readonly mode, to maintain a readonly container image
+            self.con = sqlite3.connect("file:"+api_dump_path+"?mode=ro", uri=True, check_same_thread=False)
             if settings.importEHdb_matchtitle:
                 self.db_title = {blur_title(row[0]): row[1] for row in self.con.execute("SELECT title, gid FROM gallery") if not row[0] is None}
                 self.db_title_jpn = {blur_title(row[0]): row[1] for row in self.con.execute("SELECT title_jpn, gid FROM gallery") if not row[0] is None}
