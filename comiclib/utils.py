@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Iterable
 from pathlib import Path
 from zipfile import ZipFile
 import io
@@ -20,6 +20,16 @@ logger = logging.getLogger(__name__)
 
 from .config import settings
 
+
+def ordered(iterable: Iterable[str]) -> list[str]:
+    unsorted = tuple(iterable)
+    try:
+        unsorted_path = tuple(Path(s) for s in unsorted)
+        if any(unsorted_path[0].parent != p.parent for p in unsorted_path[1:]):
+            raise ValueError
+        return sorted(unsorted, key=lambda s: int(Path(s).stem))
+    except ValueError:
+        return sorted(unsorted)
 
 mimetypes.add_type('image/jxl', '.jxl')
 def is_image(p: Union[str, Path]):
@@ -53,10 +63,10 @@ def extract_thumbnail(path: Union[str, Path], id: str, page: int, cache=False, c
         return saveto.relative_to(settings.thumb)
     saveto.parent.mkdir(parents=True, exist_ok=True)
     if path.is_dir():
-        convert_image(sorted(filter(is_image, path.iterdir()))[page-1], saveto, thumbnail=True)
+        convert_image(ordered(filter(is_image, path.iterdir()))[page-1], saveto, thumbnail=True)
     elif ArchiveFile.support_formats.fullmatch(path.name):
         with ArchiveFile(path) as z:
-            with z.open(sorted(map(lambda z_info: z_info.filename, filter(lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist())))[page-1]) as f:
+            with z.open(ordered(map(lambda z_info: z_info.filename, filter(lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist())))[page-1]) as f:
                 convert_image(f, saveto, thumbnail=True)
     else:
         raise NotImplementedError
