@@ -39,6 +39,7 @@ pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 ``` bash
 docker run -p 8000:8000 \
 --mount type=bind,source=<YOUR_COMIC_DIRECTORY_HERE>,target=/root/comiclib \
+--mount type=bind,source=<USER_DATA_PATH>,target=/userdata \
 urenko/comiclib
 ```
 ComicLib now runs at http://localhost:8000 .

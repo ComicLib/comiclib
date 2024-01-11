@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     importEHdb_thumb: bool = True
     importEHdb_matchtitle: Union[bool, str] = Field(default=True, union_mode='left_to_right')
     importEHdb_matchtorrent: bool = True
+    importEHdb_API_DUMP_PATH: str = "api_dump.sqlite"
 settings = Settings()
 
 import logging
@@ -38,9 +39,10 @@ class Scanner:
 Currently only support matching by the source URL (from previous scanners).'''
     
     def __init__(self) -> None:
-        if Path("api_dump.sqlite").exists():
+        if Path(settings.importEHdb_API_DUMP_PATH).exists():
             logger.info('Loading ehentai metadata database, please wait...')
-            self.con = sqlite3.connect("api_dump.sqlite", check_same_thread=False)
+            # do it in readonly mode, to maintain a readonly container image
+            self.con = sqlite3.connect("file:"+settings.importEHdb_API_DUMP_PATH+"?mode=ro", uri=True, check_same_thread=False)
             if settings.importEHdb_matchtitle:
                 self.db_title = {blur_title(row[0]): row[1] for row in self.con.execute("SELECT title, gid FROM gallery") if not row[0] is None}
                 self.db_title_jpn = {blur_title(row[0]): row[1] for row in self.con.execute("SELECT title_jpn, gid FROM gallery") if not row[0] is None}
