@@ -23,9 +23,9 @@ FROM gcr.io/distroless/python3-debian12
 COPY --from=build-venv /venv                            /venv
 COPY --from=build-venv /usr/bin/7zz                     /usr/bin
 COPY --from=build-venv /usr/bin/ffmpeg                  /usr/bin
-COPY --from=build-venv /extract/api_dump.sqlite         /data
+COPY --from=build-venv /extract/api_dump.sqlite         /data/api_dump.sqlite
 COPY --from=build-venv /userdata                        /userdata
-ENV API_DUMP_PATH=/data/api_dump.sqlite content=/root/comiclib watch=False
+ENV importEHdb_API_DUMP_PATH=/data/api_dump.sqlite content=/root/comiclib watch=False
 EXPOSE 8000
 WORKDIR /userdata
 VOLUME /userdata
