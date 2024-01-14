@@ -36,57 +36,65 @@ logger.info(f"Loaded scanners: {[scanner[1] for scanner in scanners]}")
 
 def scan(paths):
     with Session(engine) as db:
-        for p in paths:
-            p = Path(os.path.relpath(p, settings.content))
-            if p.is_relative_to('thumb'):
-                continue
-            old_a = db.scalar(select(Archive).where(
-                Archive.path == p.as_posix()))
-            if old_a is None:
-                a = Archive(path=p.as_posix())
-                archive_id = '00' + hashlib.blake2b(p.as_posix().encode(), digest_size=19).hexdigest()  # 00 stands for ID type origin
-            elif settings.skip_exits:
-                continue
-            else:
-                a = old_a
-                archive_id = old_a.id
-            metadata = {"id": archive_id, "title": a.title, "subtitle": a.subtitle, "source": a.source, "pagecount": a.pagecount, "tags": set(
-                t.tag for t in a.tags if not t.tag.startswith("date_added:")), "categories": set(c.name for c in a.categories)}
-            real_path = Path(settings.content) / p
-            prev_scanners = []
-            for scanner, name in scanners:
-                prev_metadata = copy.deepcopy(metadata)
-                if scanner.scan(real_path, archive_id, metadata, prev_scanners):
-                    prev_scanners.append(name)
-                else:
-                    metadata = prev_metadata
-            if not prev_scanners:
-                continue
-            if not any(tag.startswith("date_added:") for tag in metadata["tags"]):
-                # Directory modification times are often difficult to synchronize.
-                mtime_path = next(real_path.iterdir()) if real_path.is_dir() else real_path
-                metadata["tags"].add(f"date_added:{int(mtime_path.stat().st_mtime)}")
-            logging.debug(pformat(metadata))
-            a.title = metadata["title"]
-            a.subtitle = metadata["subtitle"]
-            a.source = metadata["source"]
-            a.pagecount = metadata["pagecount"]
-            a.thumb = metadata["thumb"]
-            for tag in filter(lambda t: not t.tag in metadata["tags"], a.tags):
-                a.tags.remove(tag)
-            for tag in metadata["tags"] - set(t.tag for t in a.tags):
-                a.tags.append(Tag(archive_id=metadata["id"], tag=tag))
-            for category in filter(lambda c: not c.name in metadata["categories"], a.categories):
-                a.categories.remove(category)
-            for category in metadata["categories"] - set(c.name for c in a.categories):
-                if (c := db.scalar(select(Category).where(Category.name == category))) is None:
-                    c = Category(name=category, pinned=0)
-                    db.add(c)
-                a.categories.append(c)
-            if old_a is None:
-                assert len(metadata["id"]) == 40, f'The length of ID {metadata["id"]} is incorrect.'
-                a.id = metadata["id"]
-                db.add(a)
+        try:
+            for p in paths:
+                checkpoint = db.begin_nested()
+                try:
+                    p = Path(os.path.relpath(p, settings.content))
+                    if p.is_relative_to('thumb'):
+                        continue
+                    old_a = db.scalar(select(Archive).where(
+                        Archive.path == p.as_posix()))
+                    if old_a is None:
+                        a = Archive(path=p.as_posix())
+                        archive_id = '00' + hashlib.blake2b(p.as_posix().encode(), digest_size=19).hexdigest()  # 00 stands for ID type origin
+                    elif settings.skip_exits:
+                        continue
+                    else:
+                        a = old_a
+                        archive_id = old_a.id
+                    metadata = {"id": archive_id, "title": a.title, "subtitle": a.subtitle, "source": a.source, "pagecount": a.pagecount, "tags": set(
+                        t.tag for t in a.tags if not t.tag.startswith("date_added:")), "categories": set(c.name for c in a.categories)}
+                    real_path = Path(settings.content) / p
+                    prev_scanners = []
+                    for scanner, name in scanners:
+                        prev_metadata = copy.deepcopy(metadata)
+                        if scanner.scan(real_path, archive_id, metadata, prev_scanners):
+                            prev_scanners.append(name)
+                        else:
+                            metadata = prev_metadata
+                    if not prev_scanners:
+                        continue
+                    if not any(tag.startswith("date_added:") for tag in metadata["tags"]):
+                        # Directory modification times are often difficult to synchronize.
+                        mtime_path = next(real_path.iterdir()) if real_path.is_dir() else real_path
+                        metadata["tags"].add(f"date_added:{int(mtime_path.stat().st_mtime)}")
+                    logging.debug(pformat(metadata))
+                    a.title = metadata["title"]
+                    a.subtitle = metadata["subtitle"]
+                    a.source = metadata["source"]
+                    a.pagecount = metadata["pagecount"]
+                    a.thumb = metadata["thumb"]
+                    for tag in filter(lambda t: not t.tag in metadata["tags"], a.tags):
+                        a.tags.remove(tag)
+                    for tag in metadata["tags"] - set(t.tag for t in a.tags):
+                        a.tags.append(Tag(archive_id=metadata["id"], tag=tag))
+                    for category in filter(lambda c: not c.name in metadata["categories"], a.categories):
+                        a.categories.remove(category)
+                    for category in metadata["categories"] - set(c.name for c in a.categories):
+                        if (c := db.scalar(select(Category).where(Category.name == category))) is None:
+                            c = Category(name=category, pinned=0)
+                            db.add(c)
+                        a.categories.append(c)
+                    if old_a is None:
+                        assert len(metadata["id"]) == 40, f'The length of ID {metadata["id"]} is incorrect.'
+                        a.id = metadata["id"]
+                        db.add(a)
+                    checkpoint.commit()
+                finally:
+                    if checkpoint.is_active:
+                        checkpoint.rollback()
+        finally:
             db.commit()
 
 def get_files_inuse():
