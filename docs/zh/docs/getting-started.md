@@ -40,9 +40,11 @@ pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 docker run -p 8000:8000 \
 --mount type=bind,source=你的漫画库路径,target=/root/comiclib \
 --mount type=bind,source=你的数据路径,target=/userdata \
-urenko/comiclib
+ghcr.io/comiclib/comiclib:master
 ```
 现在 ComicLib 运行在了 http://localhost:8000 。如果你想要使用 `api_dump.sqlite`, 请手动下载并将其放在 `/userdata` 下。
+
+或者你可以使用带有 `-full` 后缀的镜像，其中包含了 `api_dump.sqlite`，但镜像大小会大很多。
 
 注：目前监视漫画文件夹默认对 Docker 禁用。
 
