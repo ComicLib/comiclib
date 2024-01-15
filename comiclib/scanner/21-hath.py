@@ -10,7 +10,11 @@ class Scanner:
     def scan(self, path: Path, id: str, metadata: dict, prev_scanners: list[str]) -> bool:
         if path.is_dir() and (path / 'galleryinfo.txt').exists():
             logger.info(f' <- {path}')
-            metadata["source"] = 'https://exhentai.org/g/' + re.search(r"\[(\d+)\]$", path.name)[1] + '/'
+            match = re.search(r"\[(\d+)\]$", path.name)
+            if match is not None:
+                metadata["source"] = 'https://exhentai.org/g/' + match[1] + '/'
+            else:
+                metadata["source"] = 'https://exhentai.org/g/' + path.name + '/'
             information = (path / 'galleryinfo.txt').read_text().splitlines()
             _key, _, title = information[0].partition(':')
             assert _key == 'Title'
