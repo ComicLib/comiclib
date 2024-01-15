@@ -42,7 +42,7 @@ docker run -p 8000:8000 \
 --mount type=bind,source=你的数据路径,target=/userdata \
 urenko/comiclib
 ```
-现在 ComicLib 运行在了 http://localhost:8000 。
+现在 ComicLib 运行在了 http://localhost:8000 。如果你想要使用 `api_dump.sqlite`, 请手动下载并将其放在 `/userdata` 下。
 
 注：目前监视漫画文件夹默认对 Docker 禁用。
 
