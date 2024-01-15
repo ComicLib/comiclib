@@ -17,7 +17,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}-full
+  IMAGE_NAME: ${{ github.repository }}
   # docker.io/<account>/<repo>
   AUTHOR: urenko
 
@@ -80,7 +80,23 @@ jobs:
         id: meta_dockerhub
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          images: docker.io/${{ secrets.DOCKERHUB_USERNAME || env.AUTHOR }}/${{ github.event.repository.name }}-full
+          images: docker.io/${{ secrets.DOCKERHUB_USERNAME || env.AUTHOR }}/${{ github.event.repository.name }}
+
+      - name: Extract Docker metadata from ${{ env.REGISTRY }}
+        id: meta-full
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            suffix=-full,onlatest=true
+
+      - name: Extract Docker metadata from Docker Hub
+        id: meta_dockerhub-full
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        with:
+          images: docker.io/${{ secrets.DOCKERHUB_USERNAME || env.AUTHOR }}/${{ github.event.repository.name }}
+          flavor: |
+            suffix=-full,onlatest=true
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -90,12 +106,27 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          build-args: |
-            BUILDTYPE=full
           tags: |
             ${{ steps.meta.outputs.tags }}
             ${{ steps.meta_dockerhub.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILDTYPE=minimal
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Docker image with api_dump.sql
+        id: build-and-push-full
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ steps.meta-full.outputs.tags }}
+            ${{ steps.meta_dockerhub-full.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILDTYPE=full
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -111,6 +142,8 @@ jobs:
           TAGS: |
             ${{ steps.meta.outputs.tags }}
             ${{ steps.meta_dockerhub.outputs.tags }}
+            ${{ steps.meta-full.outputs.tags }}
+            ${{ steps.meta_dockerhub-full.outputs.tags }}        
           DIGEST: |
             ${{ steps.build-and-push.outputs.digest }}
         # This step uses the identity token to provision an ephemeral certificate
