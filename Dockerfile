@@ -1,3 +1,5 @@
+ARG BUILDTYPE=minimal
+
 FROM debian:12-slim AS build-venv
 
 RUN apt-get update && \
@@ -14,7 +16,22 @@ RUN /venv/bin/pip install --no-cache-dir -U "/tmp/comiclib[full]"
 RUN /venv/bin/pip install --no-cache-dir -U gunicorn
 RUN mkdir /userdata 
 
-FROM gcr.io/distroless/python3-debian12 
+FROM debian:12-slim AS data
+ADD https://files.niconi.org/api_dump.sqlite.7z /tmp
+COPY --from=build-venv /usr/bin/7zz /usr/bin
+RUN mkdir /exract
+WORKDIR /extract
+RUN 7zz x /tmp/api_dump.sqlite.7z
+
+FROM gcr.io/distroless/python3-debian12 AS product-env-full
+ENV importEHdb_database_URI=file:/data/api_dump.sqlite?mode=rw
+COPY --from=data /extract/api_dump.sqlite /data/api_dump.sqlite
+
+FROM gcr.io/distroless/python3-debian12 AS product-env-minimal
+ENV importEHdb_database_URI=file:api_dump.sqlite?mode=rw
+
+
+FROM product-env-${BUILDTYPE}
 COPY --from=build-venv /venv                            /venv
 COPY --from=build-venv /usr/bin/7zz                     /usr/bin
 COPY --from=build-venv /usr/bin/ffmpeg                  /usr/bin
