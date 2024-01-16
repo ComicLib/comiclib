@@ -1,16 +1,12 @@
 # 扫描脚本
 
-ComicLib 的主体仅负责遍历漫画库，漫画文件的判断、解析等都是通过扫描脚本完成的。
+请先阅读 [扫描与监视的细节](scan&watch.md)。
 
 扫描脚本分为[内置脚本](https://github.com/ComicLib/comiclib/tree/master/comiclib/scanner)和外置脚本，所有工作目录下的 *.py 文件都会作为外置脚本加载。
 
 对于每个候选漫画文件（夹），扫描脚本按照文件名的顺序（与是否内置无关）像流水线一样依次执行，完成不同的任务。
 
 可以在[官方仓库](https://github.com/ComicLib/scanner)找到一些外置扫描脚本，也可以下载其他人编写的。另外，只要会一些简单的 Python 就可以自己编写。
-
-默认情况下除了在启动时扫描一遍，也会在运行时监视漫画库。
-遇到曾扫入数据库的漫画会跳过。
-参考[设置](settings.md)以变更行为。
 
 ## 内置扫描脚本
 
@@ -51,6 +47,7 @@ ComicLib 的主体仅负责遍历漫画库，漫画文件的判断、解析等�
 | `importEHdb_thumb` | 是否从中导入缩略图（`True`/`False`）| `True` |
 | `importEHdb_matchtitle` | 是否根据标题匹配（`True`/`False`/`exact`），`exact`为精准匹配，`True`模糊匹配 | `True` |
 | `importEHdb_matchtorrent` | 是否根据种子标题匹配（`True`/`False`）| `True` |
+| `importEHdb_database_URI` | ehentai 元数据库的 [URI](https://www.sqlite.org/uri.html) | `file:api_dump.sqlite?mode=rw` |
 
 根据 ehentai gid 匹配总是启用。
 

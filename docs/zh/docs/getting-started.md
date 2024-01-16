@@ -36,15 +36,17 @@ pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 
 ### Docker（试验性）
 
+!!! tip inline end "最小安装"
+    使用 tag `v0.0.5`（没有`-full`后缀）的镜像不自带 ehentai 元数据库，其大小会小很多。可手动下载 ehentai 元数据库并将其放在 `/userdata` 下。
+
 ``` bash
 docker run -p 8000:8000 \
 --mount type=bind,source=你的漫画库路径,target=/root/comiclib \
---mount type=bind,source=你的数据路径,target=/userdata \
-ghcr.io/comiclib/comiclib:master
+--mount type=bind,source=将要存放数据的路径,target=/userdata \
+ghcr.io/comiclib/comiclib:v0.0.5-full
 ```
-现在 ComicLib 运行在了 http://localhost:8000 。如果你想要使用 `api_dump.sqlite`, 请手动下载并将其放在 `/userdata` 下。
 
-或者你可以使用带有 `-full` 后缀的镜像，其中包含了 `api_dump.sqlite`，但镜像大小会大很多。
+现在 ComicLib 运行在了 http://localhost:8000 。
 
 注：目前监视漫画文件夹默认对 Docker 禁用。
 

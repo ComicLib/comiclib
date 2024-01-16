@@ -4,13 +4,12 @@
 中文 | [English](https://github.com/comiclib/comiclib/blob/master/README.md)
 
 # ✨ 特点
-- 📁 支持[多种存档格式](https://comiclib.github.io/comiclib/zh/supported-formats/)
-- 🏷️ 支持tag和分类元数据导入和管理
-- 🔌 支持[插件](https://comiclib.github.io/comiclib/zh/scanner/)
-- 🖼️ 支持JPEG XL
+- 📁 支持[多种存档格式](https://comiclib.github.io/comiclib/zh/supported-formats/)，包括文件夹
+- 🏷️ 可通过[插件](https://comiclib.github.io/comiclib/zh/scanner/)自定义 tag 和分类元数据的导入和管理
 - 💻 与 [LANraragi](https://github.com/Difegue/LANraragi) 兼容的API
 - 📜 卷轴式/书本式阅读器（[eHunter](https://github.com/hanFengSan/eHunter)）
 - 🔁 标签翻译（[EhTagTranslation](https://github.com/EhTagTranslation/Database)）
+- 🖼️ 支持JPEG XL
 
 # 🚀 安装
 确保你安装了 🐍 Python ⩾ 3.9，并通过如下命令安装 📚 ComicLib

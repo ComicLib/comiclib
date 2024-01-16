@@ -36,15 +36,16 @@ pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 
 ### Docker (Experimental)
 
+!!! tip inline end "Minimal installation"
+    Image with tag `v0.0.5` (without `-full` suffix) does not ship the ehentai metadata database, therefore its size is much smaller. You can download the ehentai metadata database to `/userdata` if you need it.
+
 ``` bash
 docker run -p 8000:8000 \
 --mount type=bind,source=<YOUR_COMIC_DIRECTORY_HERE>,target=/root/comiclib \
 --mount type=bind,source=<USER_DATA_PATH>,target=/userdata \
-ghcr.io/comiclib/comiclib:master
+ghcr.io/comiclib/comiclib:v0.0.5-full
 ```
-ComicLib now runs at http://localhost:8000 . If you want to use `api_dump.sqlite`, please put it under `/userdata`. 
-
-Or you can use images with `-full` suffix to include `api_dump.sqlite` in the image, however the image size is much larger.
+ComicLib now runs at http://localhost:8000 .
 
 P.S.: Monitoring comic folders is disabled by default for Docker currently.
 

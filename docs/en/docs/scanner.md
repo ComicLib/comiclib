@@ -1,16 +1,12 @@
 # Scanner
 
-The main part of ComicLib is only responsible for traversing the comic library. The judgment and analysis of comic files are all completed through scanners.
+Please read [Details about scanning and watching](scan&watch.md) first.
 
 Scanners are divided into [built-in scanners](https://github.com/ComicLib/comiclib/tree/master/comiclib/scanner) and external scanners. All *.py files in the working directory will be loaded as external scanners.
 
 For each candidate comic file (folder), scanners are executed sequentially in the order of the file name (regardless of whether it is built-in or not) to complete different tasks, like an assembly line.
 
 You can find some external scanners in the [official repository](https://github.com/ComicLib/scanner), or download those written by others. In addition, you can write it by yourself as long as you know some simple Python.
-
-By default, in addition to scanning once at startup, the comic library will also be monitored at runtime.
-Comics that have been scanned into the database will be skipped.
-See [Settings](settings.md) to change the behavior.
 
 ## Built-in scanners
 
@@ -52,6 +48,7 @@ Environment variable settings:
 | `importEHdb_thumb` | Whether to import thumbnails from it (`True`/`False`) | `True` |
 | `importEHdb_matchtitle` | Whether to match based on the title (`True`/`False`/`exact`), `exact` for exact matching, `True` for fuzzy matching | `True` |
 | `importEHdb_matchtorrent` | Whether to match based on the torrent file names (`True`/`False`) | `True` |
+| `importEHdb_database_URI` | [URI](https://www.sqlite.org/uri.html) of the ehentai metadata database  | `file:api_dump.sqlite?mode=rw` |
 
 Matching based on ehentai gid is always enabled.
 

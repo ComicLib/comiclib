@@ -4,13 +4,12 @@
 English | [中文](https://github.com/comiclib/comiclib/blob/master/README.zh.md)
 
 # ✨ Features
-- 📁 Support [multiple archive formats](https://comiclib.github.io/comiclib/en/supported-formats/)
-- 🏷️ Support tag and category metadata import and management
-- 🔌 Support [plugins](https://comiclib.github.io/comiclib/en/scanner/)
-- 🖼️ Support JPEG XL
+- 📁 Support [multiple archive formats](https://comiclib.github.io/comiclib/en/supported-formats/), including folders
+- 🏷️ Customizable tag and category metadata import and management with [plugins](https://comiclib.github.io/comiclib/en/scanner/)
 - 💻 [LANraragi](https://github.com/Difegue/LANraragi)-compatible API
 - 📜 scroll / book mode reader ([eHunter](https://github.com/hanFengSan/eHunter))
 - 🔁 Tag translation ([EhTagTranslation](https://github.com/EhTagTranslation/Database))
+- 🖼️ Support JPEG XL
 
 # 🚀 Installation
 Make sure you have 🐍 Python ⩾ 3.9 installed, and install 📚 ComicLib with the following command

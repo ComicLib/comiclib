@@ -2,13 +2,12 @@
 <p align="center"><sup>Manage, read and share your comic/manga library</sup></p>
 
 ## ✨ Features
-- 📁 Support [multiple archive formats](supported-formats.md)
-- 🏷️ Support tag and category metadata import and management
-- 🔌 Support plugins
-- 🖼️ Support JPEG XL
+- 📁 Support [multiple archive formats](supported-formats.md), including folders
+- 🏷️ Customizable tag and category metadata import and management with [plugins](scanner.md)
 - 💻 [LANraragi](https://github.com/Difegue/LANraragi)-compatible API
 - 📜 scroll / book mode reader ([eHunter](https://github.com/hanFengSan/eHunter))
 - 🔁 Tag translation ([EhTagTranslation](https://github.com/EhTagTranslation/Database))
+- 🖼️ Support JPEG XL
 
 👉 [Get started](getting-started.md) now
 
