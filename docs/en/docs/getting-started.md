@@ -40,9 +40,11 @@ pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 docker run -p 8000:8000 \
 --mount type=bind,source=<YOUR_COMIC_DIRECTORY_HERE>,target=/root/comiclib \
 --mount type=bind,source=<USER_DATA_PATH>,target=/userdata \
-urenko/comiclib
+ghcr.io/comiclib/comiclib:master
 ```
-ComicLib now runs at http://localhost:8000 .
+ComicLib now runs at http://localhost:8000 . If you want to use `api_dump.sqlite`, please put it under `/userdata`. 
+
+Or you can use images with `-full` suffix to include `api_dump.sqlite` in the image, however the image size is much larger.
 
 P.S.: Monitoring comic folders is disabled by default for Docker currently.
 
