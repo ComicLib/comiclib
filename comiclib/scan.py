@@ -108,7 +108,7 @@ def get_files_inuse():
 
 def watch():
     file_sizes = {}
-    for changes in watchfiles.watch(settings.content, watch_filter=lambda change, _: change in (watchfiles.Change.added, watchfiles.Change.modified)):
+    for changes in watchfiles.watch(settings.content, watch_filter=lambda change, path: change in (watchfiles.Change.added, watchfiles.Change.modified) and Path(path).is_file()):
         for _, fname in changes:
             try:
                 if _check_inuse:
