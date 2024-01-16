@@ -285,7 +285,7 @@ def extract_archive(id: str, force: bool = True, db: Session = Depends(get_db)):
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
     path = Path(settings.content) / a.path
     if path.is_dir():
-        pages = [f"./api/archives/{id}/page?path="+quote(p.name, safe='') for p in ordered(path.iterdir()) if is_image(p)]
+        pages = [f"./api/archives/{id}/page?path="+quote(p.name, safe='') for p in ordered(filter(is_image, path.iterdir()))]
     elif ArchiveFile.support_formats.fullmatch(path.name):
         with ArchiveFile(path) as z:
             pages = [f"./api/archives/{id}/page?path="+quote(filename, safe='') for filename in ordered(map(lambda z_info: z_info.filename, filter(lambda z_info: not z_info.is_dir() and is_image(z_info.filename), z.infolist())))]
