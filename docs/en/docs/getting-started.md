@@ -133,7 +133,7 @@ CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}
 ```
 or
 ``` bash
-importEHdb_matchtorrent=False importEHdb_matchtitle=False CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}\n{path}' uvicorn comiclib.main:app --uds /tmp/comiclib.sock --reload --log-level trace
+CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}\n{path}' uvicorn comiclib.main:app --uds /tmp/comiclib.sock --reload --log-level trace
 ```
 for debugging.
 Then use Nginx to reverse proxy to HTTPS connection.

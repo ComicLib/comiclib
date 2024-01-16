@@ -134,7 +134,7 @@ CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}
 ```
 或者
 ``` bash
-importEHdb_matchtorrent=False importEHdb_matchtitle=False CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}\n{path}' uvicorn comiclib.main:app --uds /tmp/comiclib.sock --reload --log-level trace
+CONTENT=../mycomics/ thumb=/tmp/thumb/ display_title_format='{subtitle}\n{title}\n{path}' uvicorn comiclib.main:app --uds /tmp/comiclib.sock --reload --log-level trace
 ```
 用于调试。
 然后通过 Nginx 反代为 HTTPS 连接。

@@ -7,11 +7,11 @@
 * 启动 ComicLib 时，进行一次完整扫描
 * ComicLib 启动后，当 `watch=True` 时，监视到 `content` 环境变量指示的目录下发生创建/修改事件（仅限于文件）
 * 手动运行 `comicscan` 命令进行完整扫描
-* 调用 `scan` 接口进行单一文件/文件夹扫描，如：
+* 调用 `scan` 接口扫描特定的文件/文件夹，如：
 
 ``` python
 from comiclib.scan import scan
-scan("content/comic/to/scan")  # 路径应为 `content` 环境变量指示的目录的子路径
+scan(["content/comic/to/scan"])  # 路径应为 `content` 环境变量指示的目录的子路径
 # 对于文件夹，这意味着尝试将该文件夹本身作为一个漫画，而不是搜寻其下的多个漫画
 ```
 
@@ -23,3 +23,5 @@ scan("content/comic/to/scan")  # 路径应为 `content` 环境变量指示的目
 * 相对路径是漫画的重要标识。这意味着如果一本漫画被移动到了别处，ComicLib 会认为这是另一本漫画；重新扫描时会跳过同一路径的漫画，除非 `skip_exists=False`；将漫画库整体移到别处并修改 `content` 环境变量保持相对关系不变则不需要重新扫描。
 * ComicLib 的主体仅负责遍历漫画库，漫画文件的判断都是通过[扫描脚本](scanner.md)完成的。当有一个[扫描脚本](scanner.md)承认该路径是漫画则计入数据库。
 * 漫画的元数据解析、缩略图提取也是由[扫描脚本](scanner.md)负责。
+* 在完整扫描时，若[扫描脚本](scanner.md)出错会停止整个扫描以让用户确定错误，但扫描进度得以保留。
+* 监视时遇到的错误会忽略。
