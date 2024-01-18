@@ -13,7 +13,7 @@ RUN /venv/bin/pip install --no-cache-dir -U "/tmp/comiclib[full]"
 RUN /venv/bin/pip install --no-cache-dir -U gunicorn
 RUN mkdir /userdata 
 
-FROM quay.io/karuboniru/7zz:latest AS data
+FROM quay.io/karuboniru/7zz:2301 AS data
 ADD https://files.niconi.org/api_dump.sqlite.7z /tmp
 RUN mkdir /exract
 WORKDIR /extract
@@ -32,7 +32,7 @@ COPY --from=build-venv /venv                            /venv
 COPY --from=build-venv /userdata                        /userdata
 COPY --from=quay.io/karuboniru/7zz:2301  \
                        /usr/local/bin/7zz               /usr/bin
-COPY --from=docker.io/mwader/static-ffmpeg:6.1.1 \
+COPY --from=docker.io/mwader/static-ffmpeg:latest \
                        /ffmpeg                          /usr/bin
 
 ENV content=/root/comiclib watch=False
