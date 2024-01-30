@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     display_subtitle: Optional[bool] = None
     UA_convert_jxl: str = 'Android'
     UA_convert_all: str = r'\b\B'  # default: match nothing
+    skip_scan_error: bool = False
 
 settings = Settings()
 

@@ -5,6 +5,7 @@ import sys
 import copy
 import hashlib
 import time
+import traceback
 from pathlib import Path
 from pprint import pformat
 
@@ -35,11 +36,14 @@ logger.info(f"Loaded scanners: {[scanner[1] for scanner in scanners]}")
 
 
 def scan(paths):
+    exceptions = Exception if settings.skip_scan_error else ()
+    errors = {}
     with Session(engine) as db:
         try:
             for p in paths:
                 checkpoint = db.begin_nested()
                 try:
+                    name = None
                     p = Path(os.path.relpath(p, settings.content))
                     if p.is_relative_to('thumb'):
                         continue
@@ -59,10 +63,11 @@ def scan(paths):
                     prev_scanners = []
                     for scanner, name in scanners:
                         prev_metadata = copy.deepcopy(metadata)
-                        if scanner.scan(real_path, archive_id, metadata, prev_scanners):
+                        if scanner.scan(path=real_path, id=archive_id, metadata=metadata, prev_scanners=prev_scanners):
                             prev_scanners.append(name)
                         else:
                             metadata = prev_metadata
+                    name = 'post_process'
                     if not prev_scanners:
                         continue
                     if not any(tag.startswith("date_added:") for tag in metadata["tags"]):
@@ -91,11 +96,16 @@ def scan(paths):
                         a.id = metadata["id"]
                         db.add(a)
                     checkpoint.commit()
+                except exceptions:
+                    logger.error(traceback.format_exc())
+                    errors[str(p)] = name
                 finally:
                     if checkpoint.is_active:
                         checkpoint.rollback()
         finally:
             db.commit()
+            if settings.skip_scan_error and errors:
+                logger.error('Processing failed while scanning the following files:\n%s', pformat(errors))
 
 def get_files_inuse():
     ret = set()
