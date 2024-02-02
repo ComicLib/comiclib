@@ -23,16 +23,31 @@ def blur_title(title: str):
         return title
     return title.translate(str.maketrans({
         ' ': None,
-        '*': None,
         '_': None,
         '(': None,
         ')': None,
         ':': None,
-        '+': None
+        '：': None,
+        '"': None,
+        '＂': None,
+        '*': None,
+        '＊': None,
+        '?': None,
+        '？': None,
+        '|': None,
+        '｜': None,
+        '<': None,
+        '＜': None,
+        '>': None,
+        '＞': None,
+        '/': None,
+        '／': None,
+        '\\': None,
+        '＼': None,
     }))
 
 # Please update the version once the above function is updated.
-blur_title_version = 1
+blur_title_version = 2
 title2gid_table = 'gallery' if settings.importEHdb_matchtitle == 'exact' else f'comiclib_title2gid_v{blur_title_version}'
 title2gid_index = 'gallery_title' if settings.importEHdb_matchtitle == 'exact' else f'title_index_v{blur_title_version}'
 titlejpn2gid_table = f"comiclib_titlejpn2gid_v{0 if settings.importEHdb_matchtitle == 'exact' else blur_title_version}"
