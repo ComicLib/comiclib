@@ -40,7 +40,7 @@ class Scanner:
                 if line.startswith("Category: "): metadata["categories"].add(line.removeprefix("Category: "))
                 elif line_tags:
                     if line.startswith("> "):
-                        namespace, _, names = line.removeprefix("> ").replace("：", ":").partition(':')
+                        namespace, _, names = line.removeprefix("> ").replace("：", ":", 1).partition(':')
                         for name in names.split(","):
                             metadata["tags"].add(f"{namespace}:{name.strip()}")
                     else:
