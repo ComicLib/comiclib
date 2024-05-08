@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 COPY . /tmp/comiclib
 RUN /venv/bin/pip install --no-cache-dir -U "/tmp/comiclib[full]"
-RUN /venv/bin/pip install --no-cache-dir -U gunicorn
+RUN /venv/bin/pip install --no-cache-dir -U gunicorn jxlpy
 RUN mkdir /userdata 
 
 FROM quay.io/karuboniru/7zz:2301 AS data
@@ -32,8 +32,8 @@ COPY --from=build-venv /venv                            /venv
 COPY --from=build-venv /userdata                        /userdata
 COPY --from=quay.io/karuboniru/7zz:2301  \
                        /usr/local/bin/7zz               /usr/bin
-COPY --from=docker.io/mwader/static-ffmpeg:latest \
-                       /ffmpeg                          /usr/bin
+# COPY --from=docker.io/mwader/static-ffmpeg:latest \
+#                        /ffmpeg                          /usr/bin
 
 ENV content=/root/comiclib watch=False
 EXPOSE 8000

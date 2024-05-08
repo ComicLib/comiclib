@@ -7,7 +7,9 @@
 - 💻 与 [LANraragi](https://github.com/Difegue/LANraragi) 兼容的API
 - 📜 卷轴式/书本式阅读器（[eHunter](https://github.com/hanFengSan/eHunter)）
 - 🔁 标签翻译（[EhTagTranslation](https://github.com/EhTagTranslation/Database)）
-- 🖼️ 支持 JPEG XL
+- 🖼️ 支持 JPEG XL [^1]
+
+[^1]: 需要 `pip install jxlpy`。
 
 马上 👉 [开始使用](getting-started.md)
 

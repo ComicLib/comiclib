@@ -7,7 +7,9 @@
 - 💻 [LANraragi](https://github.com/Difegue/LANraragi)-compatible API
 - 📜 scroll / book mode reader ([eHunter](https://github.com/hanFengSan/eHunter))
 - 🔁 Tag translation ([EhTagTranslation](https://github.com/EhTagTranslation/Database))
-- 🖼️ Support JPEG XL
+- 🖼️ Support JPEG XL [^1]
+
+[^1]: `pip install jxlpy` required.
 
 👉 [Get started](getting-started.md) now
 
