@@ -9,7 +9,7 @@
 - 🔁 标签翻译（[EhTagTranslation](https://github.com/EhTagTranslation/Database)）
 - 🖼️ 支持 JPEG XL [^1]
 
-[^1]: 需要 `pip install jxlpy`。
+[^1]: 需要 ffmpeg 或者 `pip install jxlpy`。
 
 马上 👉 [开始使用](getting-started.md)
 
