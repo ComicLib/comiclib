@@ -81,7 +81,7 @@ if not version_file.exists() or int(version_file.read_text()) < vendor_version:
     s = requests.session()
     for name in dependencies:
         logger.info('downloading %s', name)
-        r = s.get(f"https://registry.npmjs.com/{name}/-/{name.rpartition('/')[-1]}-{dependencies[name]}.tgz", allow_redirects=True)
+        r = s.get(f"https://registry.npmjs.com/{name}/-/{name.rpartition('/')[-1]}-{dependencies[name]}.tgz", allow_redirects=True, timeout=15)
         r.raise_for_status()
         with tarfile.open(fileobj=io.BytesIO(r.content), mode='r:gz') as t:
             for vendors, v_path in [(vendor_css, 'css/vendor'), (vendor_js, 'js/vendor'), (vendor_woff, 'css/webfonts')]:
