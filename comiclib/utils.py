@@ -92,6 +92,10 @@ class ArchiveFile:
         self.file = Path(file)
         if self.file.suffix.lower() == '.zip':
             self.zipfile = ZipFile(file)
+            # Fix handling of duplicate ZipFile entries
+            # see https://github.com/python/cpython/issues/117779
+            for zinfo in self.zipfile.infolist():
+                zinfo._end_offset = None
             return
         else:
             self.zipfile = None
