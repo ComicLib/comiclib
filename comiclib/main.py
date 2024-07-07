@@ -11,6 +11,7 @@ import re
 import base64
 import tempfile
 import multiprocessing
+import shutil
 from urllib.parse import quote, unquote, urlparse
 
 from fastapi import FastAPI, Cookie, Request, Query, Depends, BackgroundTasks, Response, status, Form, HTTPException
@@ -354,7 +355,7 @@ def delete_archive(id: str, db: Session = Depends(get_db)):
     if p.is_file():
         p.unlink()
     else:
-        p.rmdir()
+        shutil.rmtree(p)
     return {
         "operation": "delete_archive",
         "success": 1,
