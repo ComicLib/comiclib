@@ -373,7 +373,7 @@ def extract_archive(id: str):
 @app.get("/api/database/stats")
 def get_statistics(minweight: int = 1, db: Session = Depends(get_db)):
     return [
-        {"namespace": tag.rpartition(':')[0], "text": tag.rpartition(
+        {"namespace": tag.partition(':')[0], "text": tag.partition(
             ':')[-1], "weight": count}
         for tag, count in db.execute(select(Tag.tag, func.count(Tag.tag)).group_by(Tag.tag).having(func.count(Tag.tag) >= minweight))
     ]
