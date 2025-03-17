@@ -17,7 +17,7 @@ jobs:
           mkdocs build -f docs/en/mkdocs.yml
           mkdocs build -f docs/zh/mkdocs.yml
           cp docs/index.html site/
-      - uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: site/
-      - uses: actions/deploy-pages@v2
+      - uses: actions/deploy-pages@v4
