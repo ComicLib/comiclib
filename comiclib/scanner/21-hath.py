@@ -10,7 +10,7 @@ class Scanner:
     def scan(self, path: Path, id: str, metadata: dict, prev_scanners: list[str]) -> bool:
         if path.is_dir() and (path / 'galleryinfo.txt').exists():
             logger.info(f' <- {path}')
-            if (match := re.search(r"\[(\d+)\]$", path.name, re.ASCII)) is not None:
+            if (match := re.search(r"\[(\d+)(?:-\d+x)?\]$", path.name, re.ASCII)) is not None:
                 metadata["source"] = 'https://exhentai.org/g/' + match[1] + '/'
             elif re.fullmatch(r"\d+", path.name, re.ASCII) is not None:
                 metadata["source"] = 'https://exhentai.org/g/' + path.name + '/'
