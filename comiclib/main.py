@@ -1,4 +1,4 @@
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 print(f" >>> ComicLib v{__version__}")
 
 from .scan import watch, scannow

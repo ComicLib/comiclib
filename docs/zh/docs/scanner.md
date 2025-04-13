@@ -35,6 +35,10 @@
 
 解析通过 [xeHentai](https://github.com/fffonion/xeHentai) 下载的漫画文件。
 
+### 24-ehentai_bot.py
+
+解析通过 [EHentai Telegram bot](https://github.com/z-mio/ehentai_bot) 或 [分布式tg eh归档bot](https://github.com/mhdy2233/tg-eh-distributed-arc-bot) 下载的漫画文件，需要将元数据文件 `<gid>.json` 放进 zip 存档中。
+
 ### 30-importEHdb.py
 
 从 [ehentai 元数据库](https://sukebei.nyaa.si/user/gipaf23445)导入相应的元数据。

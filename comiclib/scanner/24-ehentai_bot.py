@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Scanner:
-    '''For https://github.com/z-mio/ehentai_bot, with <gid>.json put into the zip archive.'''
+    '''For https://github.com/z-mio/ehentai_bot and https://github.com/mhdy2233/tg-eh-distributed-arc-bot, with <gid>.json put into the zip archive.'''
     
     def scan(self, path: Path, id: str, metadata: dict, prev_scanners: list[str]) -> bool:
         if not '10-zip' in prev_scanners or '20-ccloli' in prev_scanners:

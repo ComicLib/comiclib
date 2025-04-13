@@ -36,6 +36,11 @@ Parse comic folders downloaded via [EhViewer](https://github.com/seven332/EhView
 
 Parse comic files downloaded via [xeHentai](https://github.com/fffonion/xeHentai).
 
+### 24-ehentai_bot.py
+
+Parse comic files downloaded via [EHentai Telegram bot](https://github.com/z-mio/ehentai_bot) or  [分布式tg eh归档bot](https://github.com/mhdy2233/tg-eh-distributed-arc-bot).
+The metadata file `<gid>.json` needs to be put into the zip archive.
+
 ### 30-importEHdb.py
 
 Import the corresponding metadata from [ehentai metadata database](https://sukebei.nyaa.si/user/gipaf23445).
