@@ -88,7 +88,7 @@ class ArchiveInfo:
         return self._is_dir
 
 class ArchiveFile:
-    support_formats = re.compile('.+\.(zip|rar|7z)$', re.IGNORECASE)
+    support_formats = re.compile(r'.+\.(zip|rar|7z)$', re.IGNORECASE)
     executable = None
 
     def __init__(self, file):
