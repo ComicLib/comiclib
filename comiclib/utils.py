@@ -11,9 +11,12 @@ import itertools
 import PIL
 from PIL import Image
 try:
-    from jxlpy import JXLImagePlugin
+    import pillow_jxl
 except ModuleNotFoundError:
-    pass
+    try:
+        from jxlpy import JXLImagePlugin
+    except ModuleNotFoundError:
+        pass
 
 import logging
 logger = logging.getLogger(__name__)
