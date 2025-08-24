@@ -241,7 +241,9 @@ def get_archive_categories(id: str, db: Session = Depends(get_db)):
 
 
 @app.get("/api/archives/{id}/thumbnail")
-def get_archive_thumbnail(id: str, background_tasks: BackgroundTasks, response: Response, page: Union[int, None] = None, db: Session = Depends(get_db)):
+def get_archive_thumbnail(id: str, background_tasks: BackgroundTasks, response: Response, page: Union[int, None] = None, no_fallback: bool = False, db: Session = Depends(get_db)):
+    if no_fallback:
+        return Response(status_code=status.HTTP_200_OK)
     a = db.get(Archive, id)
     if a is None:
         return JSONResponse({"operation": "", "error": "This ID doesn't exist on the server.", "success": 0}, status.HTTP_400_BAD_REQUEST)
@@ -254,6 +256,11 @@ def get_archive_thumbnail(id: str, background_tasks: BackgroundTasks, response: 
     else:
         thumb_path = Path(settings.thumb) / extract_thumbnail(Path(settings.content) / a.path, id, page, cache=True)
     return FileResponse(thumb_path)
+
+
+@app.get("/api/archives/{id}/thumbnail")
+def queue_archive_thumbnail(force: bool = False):
+    return Response(status_code=status.HTTP_200_OK)
 
 
 @app.put("/api/archives/{id}/thumbnail", dependencies=authorization)
