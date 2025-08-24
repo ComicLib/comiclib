@@ -44,7 +44,7 @@ def convert_image(f_or_path, saveto: str, thumbnail=False):
     try:
         with Image.open(f_or_path) as im:
             if thumbnail:
-                im.thumbnail((500, 709))
+                im.thumbnail((settings.thumb_width, settings.thumb_height))
             im.save(saveto)
     except PIL.UnidentifiedImageError:
         if not isinstance(f_or_path, Path):
@@ -52,10 +52,10 @@ def convert_image(f_or_path, saveto: str, thumbnail=False):
                 f_or_path.seek(0)
                 shutil.copyfileobj(f_or_path, tmpf)
                 tmpf.flush()
-                cmd = ['ffmpeg', '-i', tmpf.name, '-vf', 'scale=500:-1', str(saveto), '-y'] if thumbnail else ['ffmpeg', '-i', tmpf.name, str(saveto), '-y']
+                cmd = ['ffmpeg', '-i', tmpf.name, '-vf', f"scale='min({settings.thumb_width},iw)':'min({settings.thumb_height},ih)':force_original_aspect_ratio=decrease", str(saveto), '-y'] if thumbnail else ['ffmpeg', '-i', tmpf.name, str(saveto), '-y']
                 subprocess.run(cmd, check=True, stderr=None if settings.debug else subprocess.DEVNULL)
         else:
-            cmd = ['ffmpeg', '-i', str(f_or_path), '-vf', 'scale=500:-1', str(saveto), '-y'] if thumbnail else ['ffmpeg', '-i', str(f_or_path), str(saveto), '-y']
+            cmd = ['ffmpeg', '-i', str(f_or_path), '-vf', f"scale='min({settings.thumb_width},iw)':'min({settings.thumb_height},ih)':force_original_aspect_ratio=decrease", str(saveto), '-y'] if thumbnail else ['ffmpeg', '-i', str(f_or_path), str(saveto), '-y']
             subprocess.run(cmd, check=True, stderr=None if settings.debug else subprocess.DEVNULL)
 
 

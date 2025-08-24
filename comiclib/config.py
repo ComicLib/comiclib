@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     content: str = '.'
     cover: str = './thumb'
     thumb: Union[str, None] = None
+    thumb_width: int = 250
+    thumb_height: int = 350
     metadata: str = 'sqlite:///./comiclib_metadata.db'
     password: Union[str, None] = None
     skip_exits: bool = True

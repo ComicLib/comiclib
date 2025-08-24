@@ -31,6 +31,8 @@ The following is a list of available settings:
 | `content` | The path where the comic file is stored | `.` |
 | `cover` | The path where the generated cover thumbnails are stored | `./thumb`|
 | `thumb` | The path where the generated page thumbnails are stored. If not provided (`None`), will be the same as `cover`. | `None`|
+| `thumb_width` | Maximum thumbnail width | 250 |
+| `thumb_height` | Maximum thumbnail height | 350 |
 | `metadata` | The URL for metadata database, refer to [SQLAlchemy documentation](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls) | `sqlite:///./comiclib_metadata.db` |
 | `password` | Admin password (also used as API Key currently) [^1]. If it is `None`, any visitor will have editing permissions. This feature is designed to protect against gentlemen but not villains. If you need security protection, please use e.g. the HTTP basic authentication of the reverse proxy, Cloudflare Access or TLS client certificate, etc. | `None`|
 | `skip_exists`| Skip comics that have been scanned into the metadata database during scanning? (`True`/`False`) | `True` |

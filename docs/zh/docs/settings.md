@@ -31,6 +31,8 @@
 | `content` | 漫画文件存放的路径 | `.` |
 | `cover` | 生成的封面缩略图存放的路径。 | `./thumb`|
 | `thumb` | 生成的页面缩略图存放的路径。如果未提供 (`None`)，会和 `cover` 的值一样。| `None`|
+| `thumb_width` | 缩略图的最大宽度 | 250 |
+| `thumb_height` | 缩略图的最大高度 | 350 |
 | `metadata` | 元数据库 URL，参考[SQLAlchemy 文档](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls) | `sqlite:///./comiclib_metadata.db` |
 | `password` | 管理密码（目前也用作 API 密钥）[^1]，若为`None`则任何访客皆可编辑。此功能防君子不防小人，若需安全保护请借助反向代理的 HTTP 基本验证、Cloudflare Access 或 TLS 客户端证书等。| `None`|
 | `skip_exists`| 扫描时是否跳过曾扫入元数据库的漫画？（`True`/`False`）| `True` |
