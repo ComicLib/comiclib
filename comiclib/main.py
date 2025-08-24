@@ -310,7 +310,7 @@ def get_archive_page(request: Request, id: str, path: str, db: Session = Depends
             saveto.parent.mkdir(parents=True, exist_ok=True)
             if p.is_dir():
                 convert_image(p / path, saveto)
-            elif ArchiveFile.support_formats.fullmatch(path.name):
+            elif ArchiveFile.support_formats.fullmatch(p.name):
                 with ArchiveFile(p) as z, z.open(path) as f:
                     convert_image(f, saveto)
             else:
