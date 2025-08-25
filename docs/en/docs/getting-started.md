@@ -37,13 +37,13 @@ pip install -U "comiclib[full] @ git+https://github.com/comiclib/comiclib.git"
 ### Docker (Experimental)
 
 !!! tip inline end "Minimal installation"
-    Image with tag `v0.0.7` (without `-full` suffix) does not ship the ehentai metadata database, therefore its size is much smaller. You can download the ehentai metadata database to `/userdata` if you need it.
+    Image with tag `v0.0.8` (without `-full` suffix) does not ship the ehentai metadata database, therefore its size is much smaller. You can download the ehentai metadata database to `/userdata` if you need it.
 
 ``` bash
 docker run -p 8000:8000 \
 --mount type=bind,source=<YOUR_COMIC_DIRECTORY_HERE>,target=/root/comiclib \
 --mount type=bind,source=<USER_DATA_PATH>,target=/userdata \
-ghcr.io/comiclib/comiclib:v0.0.7-full
+ghcr.io/comiclib/comiclib:v0.0.8-full
 ```
 ComicLib now runs at http://localhost:8000 .
 
