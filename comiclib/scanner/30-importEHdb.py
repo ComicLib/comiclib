@@ -69,7 +69,7 @@ Currently only support matching by the source URL (from previous scanners).'''
         if Path(db_path).exists():
             self.con = sqlite3.connect(settings.importEHdb_database_URI, uri=True, check_same_thread=False)
             # Check if the database is out of date
-            if self.con.execute("SELECT posted FROM gallery INDEXED BY gallery_posted ORDER BY posted DESC LIMIT 1").fetchone()[0] < 1736360728:
+            if self.con.execute("SELECT posted FROM gallery INDEXED BY gallery_posted ORDER BY posted DESC LIMIT 1").fetchone()[0] < 1754416266:
                 logger.warning("There is a new version of api_dump.sqlite, you can download it from https://sukebei.nyaa.si/user/gipaf23445")
             # Build cache during the first run
             if settings.importEHdb_matchtitle:
