@@ -14,17 +14,17 @@ RUN /venv/bin/pip install --no-cache-dir -U gunicorn jxlpy
 RUN mkdir /userdata 
 
 FROM quay.io/karuboniru/7zz:2301 AS data
-ADD https://files.niconi.org/api_dump.sqlite.7z /tmp
+ADD https://github.com/URenko/e-hentai-db/releases/download/nightly/e-hentai.db.zstd /tmp
 RUN mkdir /exract
 WORKDIR /extract
-RUN 7zz x /tmp/api_dump.sqlite.7z
+RUN 7zz x /tmp/e-hentai.db.zstd
 
 FROM gcr.io/distroless/python3-debian12 AS product-env-full
-ENV importEHdb_database_URI=file:/data/api_dump.sqlite?mode=rw
-COPY --from=data /extract/api_dump.sqlite /data/api_dump.sqlite
+ENV importEHdb_database_URI=file:/data/e-hentai.db?mode=ro
+COPY --from=data /extract/e-hentai.db /data/e-hentai.db
 
 FROM gcr.io/distroless/python3-debian12 AS product-env-minimal
-ENV importEHdb_database_URI=file:api_dump.sqlite?mode=rw
+ENV importEHdb_database_URI=file:e-hentai.db?mode=ro
 
 
 FROM product-env-${BUILDTYPE}

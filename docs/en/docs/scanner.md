@@ -43,8 +43,13 @@ The metadata file `<gid>.json` needs to be put into the zip archive.
 
 ### 30-importEHdb.py
 
-Import the corresponding metadata from [ehentai metadata database](https://sukebei.nyaa.si/user/gipaf23445).
-The database api_dump.sqlite must be downloaded to the working directory before use, otherwise it will be skipped.
+Import the corresponding metadata from [ehentai metadata database](https://github.com/URenko/e-hentai-db/releases/tag/nightly).
+Before use, download `e-hentai.db.zstd` into the working directory and decompress it, otherwise it will be skipped:
+
+```
+curl -fSL -o e-hentai.db.zstd https://github.com/URenko/e-hentai-db/releases/download/nightly/e-hentai.db.zstd
+zstd -dc e-hentai.db.zstd > e-hentai.db
+```
 
 Environment variable settings:
 
@@ -53,7 +58,8 @@ Environment variable settings:
 | `importEHdb_thumb` | Whether to import thumbnails from it (`True`/`False`) | `True` |
 | `importEHdb_matchtitle` | Whether to match based on the title (`True`/`False`/`exact`), `exact` for exact matching, `True` for fuzzy matching | `True` |
 | `importEHdb_matchtorrent` | Whether to match based on the torrent file names (`True`/`False`) | `True` |
-| `importEHdb_database_URI` | [URI](https://www.sqlite.org/uri.html) of the ehentai metadata database  | `file:api_dump.sqlite?mode=rw` |
+| `importEHdb_database_URI` | [URI](https://www.sqlite.org/uri.html) of the ehentai metadata database  | `file:e-hentai.db?mode=ro` |
+| `importEHdb_cache_URI` | [URI](https://www.sqlite.org/uri.html) of the title/torrent cache sidecar database | `file:comiclib_ehcache.db` |
 
 Matching based on ehentai gid is always enabled.
 

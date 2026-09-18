@@ -41,8 +41,13 @@
 
 ### 30-importEHdb.py
 
-从 [ehentai 元数据库](https://sukebei.nyaa.si/user/gipaf23445)导入相应的元数据。
-使用前要将数据库 api_dump.sqlite 下载到工作目录，否则会跳过。
+从 [ehentai 元数据库](https://github.com/URenko/e-hentai-db/releases/tag/nightly)导入相应的元数据。
+使用前要将 `e-hentai.db.zstd` 下载到工作目录并解压，否则会跳过：
+
+```
+curl -fSL -o e-hentai.db.zstd https://github.com/URenko/e-hentai-db/releases/download/nightly/e-hentai.db.zstd
+zstd -dc e-hentai.db.zstd > e-hentai.db
+```
 
 环境变量设置：
 
@@ -51,7 +56,8 @@
 | `importEHdb_thumb` | 是否从中导入缩略图（`True`/`False`）| `True` |
 | `importEHdb_matchtitle` | 是否根据标题匹配（`True`/`False`/`exact`），`exact`为精准匹配，`True`模糊匹配 | `True` |
 | `importEHdb_matchtorrent` | 是否根据种子标题匹配（`True`/`False`）| `True` |
-| `importEHdb_database_URI` | ehentai 元数据库的 [URI](https://www.sqlite.org/uri.html) | `file:api_dump.sqlite?mode=rw` |
+| `importEHdb_database_URI` | ehentai 元数据库的 [URI](https://www.sqlite.org/uri.html) | `file:e-hentai.db?mode=ro` |
+| `importEHdb_cache_URI` | 标题/种子缓存辅助数据库的 [URI](https://www.sqlite.org/uri.html) | `file:comiclib_ehcache.db` |
 
 根据 ehentai gid 匹配总是启用。
 
