@@ -113,10 +113,9 @@ jobs:
             ${{ steps.meta.outputs.tags }}
             ${{ steps.meta_dockerhub.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            BUILDTYPE=minimal
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          target: minimal
+          cache-from: type=gha,scope=minimal
+          cache-to: type=gha,mode=max,scope=minimal
 
       - name: Build and push Docker image with e-hentai.db
         id: build-and-push-full
@@ -129,10 +128,9 @@ jobs:
             ${{ steps.meta-full.outputs.tags }}
             ${{ steps.meta_dockerhub-full.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            BUILDTYPE=full
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          target: full
+          cache-from: type=gha,scope=full
+          cache-to: type=gha,mode=max,scope=full
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
